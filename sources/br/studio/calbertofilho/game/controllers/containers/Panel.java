@@ -5,6 +5,7 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
+import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 
 import javax.swing.JPanel;
@@ -88,7 +89,12 @@ public class Panel extends JPanel implements Runnable {
 	}
 
 ////////////////////////////////////////////////////////////////////////////////
-	private void input() {}
+	private void input() {
+		if (keyboard.escapeKey.isDown())
+			System.exit(0);
+		if (mouse.getButton() == MouseEvent.BUTTON1)
+			System.out.println("Mouse button 1");
+	}
 
 	private void update() {}
 
