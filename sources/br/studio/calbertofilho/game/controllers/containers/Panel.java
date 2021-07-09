@@ -1,4 +1,4 @@
-package br.studio.calbertofilho.game.view;
+package br.studio.calbertofilho.game.controllers.containers;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -10,7 +10,7 @@ import java.awt.image.BufferedImage;
 import javax.swing.JPanel;
 
 @SuppressWarnings("serial")
-public class GamePanel extends JPanel implements Runnable {
+public class Panel extends JPanel implements Runnable {
 
 	public static final int WIDTH = 400, HEIGHT = 600;
 	private Thread thread;
@@ -23,7 +23,7 @@ public class GamePanel extends JPanel implements Runnable {
 	private long startTime, URDTimeMillis, targetTime, waitTime, totalTime;
 	private int frameCount, maxFrameCount;
 
-	public GamePanel() {
+	public Panel() {
 		super();
 		setPreferredSize(new Dimension(WIDTH, HEIGHT));
 		setFocusable(true);

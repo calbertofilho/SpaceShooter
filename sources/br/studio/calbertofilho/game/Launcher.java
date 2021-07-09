@@ -2,7 +2,7 @@ package br.studio.calbertofilho.game;
 
 import javax.swing.ImageIcon;
 
-import br.studio.calbertofilho.game.view.Window;
+import br.studio.calbertofilho.game.controllers.containers.Window;
 
 public class Launcher {
 

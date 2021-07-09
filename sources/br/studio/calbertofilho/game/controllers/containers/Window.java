@@ -1,4 +1,4 @@
-package br.studio.calbertofilho.game.view;
+package br.studio.calbertofilho.game.controllers.containers;
 
 import java.awt.Image;
 import javax.swing.JFrame;
