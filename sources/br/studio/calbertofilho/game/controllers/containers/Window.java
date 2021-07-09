@@ -6,7 +6,7 @@ import javax.swing.JFrame;
 @SuppressWarnings("serial")
 public class Window extends JFrame {
 
-	private CanvasPanel game;
+	private DrawPanel game;
 	private int width, height;
 
 	public Window(String title, Image icon, int width, int height) {
@@ -26,7 +26,7 @@ public class Window extends JFrame {
 	@Override
 	public void addNotify() {
 		super.addNotify();
-		game = new CanvasPanel(width, height);
+		game = new DrawPanel(width, height);
 		setContentPane(game);
 	}
 

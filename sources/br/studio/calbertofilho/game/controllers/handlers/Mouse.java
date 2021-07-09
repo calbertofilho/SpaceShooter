@@ -4,13 +4,13 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 
-import br.studio.calbertofilho.game.controllers.containers.CanvasPanel;
+import br.studio.calbertofilho.game.controllers.containers.DrawPanel;
 
 public class Mouse implements MouseListener, MouseMotionListener {
 
 	private static int mousePosX, mousePosY, mouseButton;
 
-	public Mouse(CanvasPanel game) {
+	public Mouse(DrawPanel game) {
 		mousePosX = -1;
 		mousePosY = -1;
 		mouseButton = -1;
