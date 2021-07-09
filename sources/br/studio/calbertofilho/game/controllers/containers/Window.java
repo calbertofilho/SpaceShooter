@@ -7,8 +7,11 @@ import javax.swing.JFrame;
 public class Window extends JFrame {
 
 	private Panel game;
+	private int width, height;
 
-	public Window(String title, Image icon) {
+	public Window(String title, Image icon, int width, int height) {
+		this.width = width;
+		this.height = height;
 		setTitle(title);
 		setIconImage(icon);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -23,7 +26,7 @@ public class Window extends JFrame {
 	@Override
 	public void addNotify() {
 		super.addNotify();
-		game = new Panel();
+		game = new Panel(width, height);
 		setContentPane(game);
 	}
 

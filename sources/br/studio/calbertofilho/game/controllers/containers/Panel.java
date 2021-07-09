@@ -16,7 +16,7 @@ import br.studio.calbertofilho.game.controllers.handlers.Mouse;
 @SuppressWarnings("serial")
 public class Panel extends JPanel implements Runnable {
 
-	public static final int WIDTH = 400, HEIGHT = 600;
+	private static Dimension gameDimensions;
 	private Thread thread;
 	private boolean running;
 	private Keyboard keyboard;
@@ -29,9 +29,10 @@ public class Panel extends JPanel implements Runnable {
 	private long startTime, URDTimeMillis, targetTime, waitTime, totalTime;
 	private int frameCount, maxFrameCount;
 
-	public Panel() {
+	public Panel(int width, int height) {
 		super();
-		setPreferredSize(new Dimension(WIDTH, HEIGHT));
+		gameDimensions = new Dimension(width, height);
+		setPreferredSize(gameDimensions);
 		setFocusable(true);
 		requestFocus();
 		setDoubleBuffered(true);
@@ -79,7 +80,7 @@ public class Panel extends JPanel implements Runnable {
 		running = true;
 		keyboard = new Keyboard(this);
 		mouse = new Mouse(this);
-		image = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_ARGB);
+		image = new BufferedImage(getGameWidth(), getGameHeight(), BufferedImage.TYPE_INT_ARGB);
 		graphics = (Graphics2D) image.getGraphics();
 		graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		totalTime = 0;
@@ -100,11 +101,11 @@ public class Panel extends JPanel implements Runnable {
 
 	private void render() {
 		graphics.setColor(new Color(135, 206, 250)); //light sky
-		graphics.fillRect(0, 0, WIDTH, HEIGHT);
+		graphics.fillRect(0, 0, getGameWidth(), getGameHeight());
 		// show fps counter
 		graphics.setColor(Color.WHITE);
-		String text = String.format("FPS: %.2f", getFPS());
-		graphics.drawString(text, (WIDTH - graphics.getFontMetrics().stringWidth(text)) - 5, graphics.getFontMetrics().getHeight());
+		String text = String.format("FPS: %.2f", getGameFPS());
+		graphics.drawString(text, (getGameWidth() - graphics.getFontMetrics().stringWidth(text)) - 5, graphics.getFontMetrics().getHeight());
 	}
 
 	private void draw() {
@@ -114,8 +115,16 @@ public class Panel extends JPanel implements Runnable {
 	}
 ////////////////////////////////////////////////////////////////////////////////
 
-	public static double getFPS() {
+	public static double getGameFPS() {
 		return averageFPS;
+	}
+
+	public static int getGameWidth() {
+		return (int) gameDimensions.getWidth();
+	}
+
+	public static int getGameHeight() {
+		return (int) gameDimensions.getHeight();
 	}
 
 }
