@@ -14,7 +14,7 @@ import br.studio.calbertofilho.game.controllers.handlers.Keyboard;
 import br.studio.calbertofilho.game.controllers.handlers.Mouse;
 
 @SuppressWarnings("serial")
-public class Panel extends JPanel implements Runnable {
+public class GamePanel extends JPanel implements Runnable {
 
 	private static Dimension gameDimensions;
 	private Thread thread;
@@ -29,7 +29,7 @@ public class Panel extends JPanel implements Runnable {
 	private long startTime, URDTimeMillis, targetTime, waitTime, totalTime;
 	private int frameCount, maxFrameCount;
 
-	public Panel(int width, int height) {
+	public GamePanel(int width, int height) {
 		super();
 		gameDimensions = new Dimension(width, height);
 		setPreferredSize(gameDimensions);
