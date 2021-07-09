@@ -43,7 +43,7 @@ public class DrawPanel extends JPanel implements Runnable {
 	public void addNotify() {
 		super.addNotify();
 		if (thread == null) {
-			thread = new Thread(this, "GameThread");
+			thread = new Thread(this, "MainThread");
 			thread.start();
 		}
 	}
