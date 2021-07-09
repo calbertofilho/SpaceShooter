@@ -9,12 +9,17 @@ import java.awt.image.BufferedImage;
 
 import javax.swing.JPanel;
 
+import br.studio.calbertofilho.game.controllers.handlers.Keyboard;
+import br.studio.calbertofilho.game.controllers.handlers.Mouse;
+
 @SuppressWarnings("serial")
 public class Panel extends JPanel implements Runnable {
 
 	public static final int WIDTH = 400, HEIGHT = 600;
 	private Thread thread;
 	private boolean running;
+	private Keyboard keyboard;
+	private Mouse mouse;
 	private BufferedImage image;
 	private Graphics graphs;
 	private Graphics2D graphics;
@@ -47,6 +52,7 @@ public class Panel extends JPanel implements Runnable {
 		while (running) {
 			startTime = System.nanoTime();
 	/////////////////////////
+			input();
 			update();
 			render();
 			draw();
@@ -70,6 +76,8 @@ public class Panel extends JPanel implements Runnable {
 
 	public void init() {
 		running = true;
+		keyboard = new Keyboard(this);
+		mouse = new Mouse(this);
 		image = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_ARGB);
 		graphics = (Graphics2D) image.getGraphics();
 		graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
@@ -80,6 +88,8 @@ public class Panel extends JPanel implements Runnable {
 	}
 
 ////////////////////////////////////////////////////////////////////////////////
+	private void input() {}
+
 	private void update() {}
 
 	private void render() {
