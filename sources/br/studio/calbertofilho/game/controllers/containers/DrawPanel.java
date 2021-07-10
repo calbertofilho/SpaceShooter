@@ -5,13 +5,15 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
-import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 
 import javax.swing.JPanel;
 
 import br.studio.calbertofilho.game.controllers.handlers.Keyboard;
 import br.studio.calbertofilho.game.controllers.handlers.Mouse;
+import br.studio.calbertofilho.game.objects.Bullet;
+import br.studio.calbertofilho.game.objects.Player;
 
 @SuppressWarnings("serial")
 public class DrawPanel extends JPanel implements Runnable {
@@ -28,6 +30,9 @@ public class DrawPanel extends JPanel implements Runnable {
 	private static double averageFPS;
 	private long startTime, URDTimeMillis, targetTime, waitTime, totalTime;
 	private int frameCount, maxFrameCount;
+	private static Player player;
+	private Bullet bullet;
+	private static ArrayList<Bullet> bullets;
 
 	public DrawPanel(int width, int height) {
 		super();
@@ -36,7 +41,6 @@ public class DrawPanel extends JPanel implements Runnable {
 		setFocusable(true);
 		requestFocus();
 		setDoubleBuffered(true);
-		running = false;
 	}
 
 	@Override
@@ -54,10 +58,10 @@ public class DrawPanel extends JPanel implements Runnable {
 		while (running) {
 			startTime = System.nanoTime();
 	/////////////////////////
-			input();
-			update();
-			render();
-			draw();
+			updateGame();
+			inputControls();
+			renderGame();
+			drawGame();
 	/////////////////////////
 			URDTimeMillis = (System.nanoTime() - startTime) / 1000000;
 			waitTime = (targetTime - URDTimeMillis) > 0 ? (targetTime - URDTimeMillis) : 0;
@@ -87,28 +91,45 @@ public class DrawPanel extends JPanel implements Runnable {
 		frameCount = 0;
 		maxFrameCount = TARGET_FPS;
 		targetTime = 1000 / TARGET_FPS;
+		player = new Player();
+		bullets = new ArrayList<Bullet>();
 	}
 
 ////////////////////////////////////////////////////////////////////////////////
-	private void input() {
-		if (keyboard.escapeKey.isDown())
-			System.exit(0);
-		if (mouse.getButton() == MouseEvent.BUTTON1)
-			System.out.println("Mouse button 1");
+	private void inputControls() {
+		player.input(keyboard, mouse);
 	}
 
-	private void update() {}
+	private void updateGame() {
+		player.update();
+		for (int i = 0; i < bullets.size(); i++) {
+			bullet = bullets.get(i);
+			bullet.update();
+			if (bullet.isVisible())
+				bullets.remove(bullet);
+		}
+	}
 
-	private void render() {
+	private void renderGame() {
+		// draw the background color //
 		graphics.setColor(new Color(135, 206, 250)); //light sky
 		graphics.fillRect(0, 0, getGameWidth(), getGameHeight());
-		// show fps counter
-		graphics.setColor(Color.WHITE);
+		// draw player               //
+		player.render(graphics);
+		// draw bullets              //
+		for (int i = 0; i < bullets.size(); i++) {
+			bullet = bullets.get(i);
+			bullet.render(graphics);
+		}
+		// show FPS counter          //
+		graphics.setColor(Color.BLACK);
 		String text = String.format("FPS: %.2f", getGameFPS());
 		graphics.drawString(text, (getGameWidth() - graphics.getFontMetrics().stringWidth(text)) - 5, graphics.getFontMetrics().getHeight());
+		text = "Disparos: " + bullets.size();
+		graphics.drawString(text, (getGameWidth() - graphics.getFontMetrics().stringWidth(text)) - 5, 2 * graphics.getFontMetrics().getHeight());
 	}
 
-	private void draw() {
+	private void drawGame() {
 		graphs = this.getGraphics();
 		graphs.drawImage(image, 0, 0, null);
 		graphs.dispose();
@@ -125,6 +146,14 @@ public class DrawPanel extends JPanel implements Runnable {
 
 	public static int getGameHeight() {
 		return (int) gameDimensions.getHeight();
+	}
+
+	public static Player getPlayer() {
+		return player;
+	}
+
+	public static void addBullet(Bullet bullet) {
+		bullets.add(bullet);
 	}
 
 }
