@@ -8,10 +8,9 @@ import br.studio.calbertofilho.game.controllers.containers.DrawPanel;
 
 public class Enemy {
 
-	private double posX, posY;
-	private double dX, dY, angle, radians, speed;
+	private double posX, posY, dX, dY, angle, radians, speed;
 	private int radius, health, type, rank;
-	private Color normalColor;
+	private Color normalColor, hitColor;
 	private boolean ready, dead;
 
 	public Enemy(int type, int rank) {
