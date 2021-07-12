@@ -64,6 +64,7 @@ public class Player {
 			elapsedTime = (System.nanoTime() - attackingTime) / 1000000;
 			if (elapsedTime > attackingDelay) {
 				DrawPanel.addBullet(new Bullet(270, posX, posY - radius * 2));
+				attackingTime = System.nanoTime();
 			}
 		}
 	}
