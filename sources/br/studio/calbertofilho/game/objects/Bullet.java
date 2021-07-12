@@ -45,4 +45,16 @@ public class Bullet {
 		return false;
 	}
 
+	public double getX() {
+		return posX;
+	}
+
+	public double getY() {
+		return posY;
+	}
+
+	public double getRadius() {
+		return radius;
+	}
+
 }

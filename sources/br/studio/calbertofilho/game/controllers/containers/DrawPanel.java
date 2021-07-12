@@ -13,6 +13,7 @@ import javax.swing.JPanel;
 import br.studio.calbertofilho.game.controllers.handlers.Keyboard;
 import br.studio.calbertofilho.game.controllers.handlers.Mouse;
 import br.studio.calbertofilho.game.objects.Bullet;
+import br.studio.calbertofilho.game.objects.Enemy;
 import br.studio.calbertofilho.game.objects.Player;
 
 @SuppressWarnings("serial")
@@ -31,8 +32,13 @@ public class DrawPanel extends JPanel implements Runnable {
 	private long startTime, URDTimeMillis, targetTime, waitTime, totalTime;
 	private int frameCount, maxFrameCount;
 	private static Player player;
+	private double dX, dY, distance;
 	private Bullet bullet;
 	private static ArrayList<Bullet> bullets;
+	private double bulletX, bulletY, bulletRadius;
+	private Enemy enemy;
+	private static ArrayList<Enemy> enemies;
+	private double enemyX, enemyY, enemyRadius;
 
 	public DrawPanel(int width, int height) {
 		super();
@@ -93,6 +99,10 @@ public class DrawPanel extends JPanel implements Runnable {
 		targetTime = 1000 / TARGET_FPS;
 		player = new Player();
 		bullets = new ArrayList<Bullet>();
+		enemies = new ArrayList<Enemy>();
+		for (int i = 0; i < 5; i++) {
+			enemies.add(new Enemy(1, 1));
+		}
 	}
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -101,12 +111,48 @@ public class DrawPanel extends JPanel implements Runnable {
 	}
 
 	private void updateGame() {
+		// player                    //
 		player.update();
+		// bullets                   //
 		for (int i = 0; i < bullets.size(); i++) {
 			bullet = bullets.get(i);
 			bullet.update();
 			if (bullet.isVisible())
 				bullets.remove(bullet);
+		}
+		// enemies                   //
+		for (Enemy enemy : enemies) {
+			enemy.update();
+		}
+		// collisions bullet-enemies //
+		for (int i = 0; i < bullets.size(); i++) {
+			bullet = bullets.get(i);
+			bulletX = bullet.getX();
+			bulletY = bullet.getY();
+			bulletRadius = bullet.getRadius();
+			for (int j = 0; j < enemies.size(); j++) {
+				enemy = enemies.get(j);
+				enemyX = enemy.getX();
+				enemyY = enemy.getY();
+				enemyRadius = enemy.getRadius();
+				dX = bulletX - enemyX;
+				dY = bulletY - enemyY;
+				distance = Math.sqrt(dX * dX + dY * dY);
+				if (distance < bulletRadius + enemyRadius) {
+					enemy.hit();
+					bullets.remove(i);
+					i--;
+					break;
+				}
+			}
+		}
+		// check dead enemies        //
+		for (int i = 0; i < enemies.size(); i++) {
+			enemy = enemies.get(i);
+			if (enemy.isDead()) {
+				enemies.remove(i);
+				i--;
+			}
 		}
 	}
 
@@ -120,6 +166,10 @@ public class DrawPanel extends JPanel implements Runnable {
 		for (int i = 0; i < bullets.size(); i++) {
 			bullet = bullets.get(i);
 			bullet.render(graphics);
+		}
+		// draw enemies              //
+		for (Enemy enemy : enemies) {
+			enemy.render(graphics);
 		}
 		// show FPS counter          //
 		graphics.setColor(Color.BLACK);
