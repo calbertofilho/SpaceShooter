@@ -19,10 +19,10 @@ public class Bullet {
 		this.posY = y;
 		radius = 2;
 		radians = Math.toRadians(angle);
-		speed = 15;
+		speed = 10;
 		dX = Math.cos(radians) * speed;
 		dY = Math.sin(radians) * speed;
-		normalColor = Color.YELLOW;
+		normalColor = Color.ORANGE;
 	}
 
 	public void update() {

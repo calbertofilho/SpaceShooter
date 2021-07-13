@@ -10,29 +10,94 @@ import br.studio.calbertofilho.game.controllers.handlers.Mouse;
 
 public class Player {
 
-	private int[] x, y;
+	private int[] x, y, requiredPower;
 	private int posX, posY, radius;
 	private int dX, dY;
-	private int speed, lives;
-	private boolean left, right, up, down, attack;
-	private long attackingTime, elapsedTime, attackingDelay;
+	private int speed, lives, score, power, powerLevel;
+	private boolean left, right, up, down, attack, recovering;
+	private long attackingTimer, elapsedTime, attackingDelay, recoveryTimer;
 	private Color normalColor, hitColor;
 
 	public Player() {
 		x = new int[3];
 		y = new int[3];
 		posX = DrawPanel.getGameWidth() / 2;
-		posY = DrawPanel.getGameHeight() / 2;
+		posY = DrawPanel.getGameHeight() - 100;
 		radius = 10;
 		dX = 0;
 		dY = 0;
 		speed = 5;
 		lives = 3;
-		left = right = up = down = attack = false;
-		attackingTime = System.nanoTime();
-		attackingDelay = 200;
+		score = 0;
 		normalColor = Color.WHITE;
 		hitColor = Color.RED;
+		left = right = up = down = attack = recovering = false;
+		attackingTimer = System.nanoTime();
+		attackingDelay = 300;
+		recoveryTimer = 0;
+		requiredPower = new int[] {1, 2, 3, 4, 5};
+	}
+
+	public int getPosX() {
+		return posX;
+	}
+
+	public int getPosY() {
+		return posY;
+	}
+
+	public int getRadius() {
+		return radius;
+	}
+
+	public int getLives() {
+		return lives;
+	}
+
+	public boolean isRecovering() {
+		return recovering;
+	}
+
+	public int getScore() {
+		return score;
+	}
+
+	public void addScore(int score) {
+		this.score += score;
+	}
+
+	public Color getColor() {
+		return normalColor;
+	}
+
+	public void gainsLife() {
+		lives++;
+	}
+
+	public void loseLife() {
+		lives--;
+		recovering = true;
+		recoveryTimer = System.nanoTime();
+	}
+
+	public void increasePower(int power) {
+		this.power += power;
+		if (this.power >= requiredPower[powerLevel]) {
+			this.power -= requiredPower[powerLevel];
+			powerLevel++;
+		}
+	}
+
+	public int getPowerLevel() {
+		return powerLevel;
+	}
+
+	public int getPower() {
+		return power;
+	}
+
+	public int getRequiredPower() {
+		return requiredPower[powerLevel];
 	}
 
 	public void update() {
@@ -61,10 +126,27 @@ public class Player {
 		dY = 0;
 	// attacking            //
 		if (attack) {
-			elapsedTime = (System.nanoTime() - attackingTime) / 1000000;
+			elapsedTime = (System.nanoTime() - attackingTimer) / 1000000;
 			if (elapsedTime > attackingDelay) {
-				DrawPanel.addBullet(new Bullet(270, posX, posY - radius * 2));
-				attackingTime = System.nanoTime();
+				attackingTimer = System.nanoTime();
+				if (powerLevel < 2)
+					DrawPanel.addBullet(new Bullet(270, posX, posY - radius * 2));
+				else if (powerLevel < 4) {
+					DrawPanel.addBullet(new Bullet(270, posX + 5, posY - radius * 2));
+					DrawPanel.addBullet(new Bullet(270, posX - 5, posY - radius * 2));
+				} else {
+					DrawPanel.addBullet(new Bullet(275, posX + 5, posY - radius * 2));
+					DrawPanel.addBullet(new Bullet(270, posX, posY - radius * 2));
+					DrawPanel.addBullet(new Bullet(265, posX - 5, posY - radius * 2));
+				}
+			}
+		}
+	// invincible after hit //
+		if (recovering) {
+			elapsedTime = (System.nanoTime() - recoveryTimer) / 1000000;
+			if (elapsedTime > 2000) {
+				recovering = false;
+				recoveryTimer = 0;
 			}
 		}
 	}
@@ -77,14 +159,25 @@ public class Player {
 		y[0] = posY + radius;
 		y[1] = posY - radius * 2;
 		y[2] = posY + radius;
-		// draw a contour line //
-		graphics.setStroke(new BasicStroke(3));
-		graphics.setColor(normalColor.darker());
-		graphics.drawPolygon(x, y, x.length);
-		graphics.setStroke(new BasicStroke(1));
-		// fill the object     //
-		graphics.setColor(normalColor);
-		graphics.fillPolygon(x, y, x.length);
+		if (recovering) {
+			// draw a contour line //
+			graphics.setStroke(new BasicStroke(3));
+			graphics.setColor(hitColor.darker());
+			graphics.drawPolygon(x, y, x.length);
+			graphics.setStroke(new BasicStroke(1));
+			// fill the object     //
+			graphics.setColor(hitColor);
+			graphics.fillPolygon(x, y, x.length);
+		} else {
+			// draw a contour line //
+			graphics.setStroke(new BasicStroke(3));
+			graphics.setColor(normalColor.darker());
+			graphics.drawPolygon(x, y, x.length);
+			graphics.setStroke(new BasicStroke(1));
+			// fill the object     //
+			graphics.setColor(normalColor);
+			graphics.fillPolygon(x, y, x.length);
+		}
 	}
 
 	public void input(Keyboard keyboard, Mouse mouse) {
