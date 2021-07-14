@@ -4,7 +4,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.ArrayList;
 
-import br.studio.calbertofilho.game.controllers.containers.DrawPanel;
+import br.studio.calbertofilho.game.controllers.containers.DrawablePanel;
 
 public class Keyboard implements KeyListener {
 
@@ -51,7 +51,7 @@ public class Keyboard implements KeyListener {
 	public Key enterKey = new Key();
 	public Key escapeKey = new Key();
 
-	public Keyboard(DrawPanel game) {
+	public Keyboard(DrawablePanel game) {
 		game.addKeyListener(this);
 	}
 

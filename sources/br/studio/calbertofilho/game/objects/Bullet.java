@@ -4,7 +4,7 @@ import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
 
-import br.studio.calbertofilho.game.controllers.containers.DrawPanel;
+import br.studio.calbertofilho.game.controllers.containers.DrawablePanel;
 
 public class Bullet {
 
@@ -40,7 +40,7 @@ public class Bullet {
 	}
 
 	public boolean isVisible() {
-		if ((posX < -radius) || (posY < -radius) || (posX > DrawPanel.getGameWidth() + radius) || (posY > DrawPanel.getGameHeight() + radius))
+		if ((posX < -radius) || (posY < -radius) || (posX > DrawablePanel.getGameWidth() + radius) || (posY > DrawablePanel.getGameHeight() + radius))
 			return true;
 		return false;
 	}

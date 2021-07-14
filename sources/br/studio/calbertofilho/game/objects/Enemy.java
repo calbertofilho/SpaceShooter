@@ -4,7 +4,8 @@ import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
 
-import br.studio.calbertofilho.game.controllers.containers.DrawPanel;
+import br.studio.calbertofilho.game.controllers.containers.DrawablePanel;
+import br.studio.calbertofilho.game.managements.states.PlayState;
 
 public class Enemy {
 
@@ -65,7 +66,7 @@ public class Enemy {
 				health = 5;
 			}
 		}
-		posX = Math.random() * DrawPanel.getGameWidth() / 2 + DrawPanel.getGameHeight() / 4;
+		posX = Math.random() * DrawablePanel.getGameWidth() / 2 + DrawablePanel.getGameHeight() / 4;
 		posY = -radius;
 		angle = Math.random() * 140 + 20;
 		radians = Math.toRadians(angle);
@@ -79,16 +80,16 @@ public class Enemy {
 		posX += dX;
 		posY += dY;
 		if (!ready) {
-			if ((posX > radius) && (posY > radius) && (posX < DrawPanel.getGameWidth() - radius) && (posY < DrawPanel.getGameHeight() - radius))
+			if ((posX > radius) && (posY > radius) && (posX < DrawablePanel.getGameWidth() - radius) && (posY < DrawablePanel.getGameHeight() - radius))
 				ready = true;
 		}
 		if ((posX < radius) && (dX < 0))
 			dX = -dX;
 		if ((posY < radius) && (dY < 0))
 			dY = -dY;
-		if ((posX > DrawPanel.getGameWidth() - radius) && (dX > 0))
+		if ((posX > DrawablePanel.getGameWidth() - radius) && (dX > 0))
 			dX = -dX;
-		if ((posY > DrawPanel.getGameHeight() - radius) && (dY > 0))
+		if ((posY > DrawablePanel.getGameHeight() - radius) && (dY > 0))
 			dY = -dY;
 		if (hit) {
 			elapsedTime = (System.nanoTime() - hitTimer) / 1000000;
@@ -144,7 +145,7 @@ public class Enemy {
 				else
 					angle = Math.random() * 360;
 				enemy.radians = Math.toRadians(angle);
-				DrawPanel.addEnemy(enemy);
+				PlayState.addEnemy(enemy);
 			}
 		}
 	}
