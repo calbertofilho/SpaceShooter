@@ -18,6 +18,7 @@ import br.studio.calbertofilho.game.objects.Enemy;
 import br.studio.calbertofilho.game.objects.Explosion;
 import br.studio.calbertofilho.game.objects.Player;
 import br.studio.calbertofilho.game.objects.PowerUp;
+import br.studio.calbertofilho.game.texts.Notification;
 
 public class PlayState extends States {
 
@@ -36,6 +37,8 @@ public class PlayState extends States {
 	private double dX, dY, distance, random;
 	private Explosion explosion;
 	private static ArrayList<Explosion> explosions;
+	private Notification notification;
+	private ArrayList<Notification> notifications;
 	private boolean waveStart;
 	private long waveStartTimer, waveStartTimerDiff, slowDownTimer, slowDownTimerDiff;
 	private int waveNumber, waveDelay, textLength, alphaFontColor, slowDownDelay;
@@ -49,6 +52,7 @@ public class PlayState extends States {
 		enemies = new ArrayList<Enemy>();
 		powerUps = new ArrayList<PowerUp>();
 		explosions = new ArrayList<Explosion>();
+		notifications = new ArrayList<Notification>();
 		waveStart = true;
 		waveStartTimer = waveStartTimerDiff = waveNumber = 0;
 		waveDelay = 2000;
@@ -113,6 +117,13 @@ public class PlayState extends States {
 			if (!explosion.isVisible())
 				explosions.remove(explosion);
 		}
+		// notifications             //
+		for (int i = 0; i < notifications.size(); i++) {
+			notification = notifications.get(i);
+			notification.update();
+			if (!notification.isVisible())
+				notifications.remove(notification);
+		}
 		// collisions bullet-enemies //
 		for (int i = 0; i < bullets.size(); i++) {
 			bullet = bullets.get(i);
@@ -148,8 +159,6 @@ public class PlayState extends States {
 				else if (random < 0.020)
 					powerUps.add(new PowerUp(PowerUp.DOUBLEPOWER, enemy.getX(), enemy.getY()));
 				else if (random < 0.130)
-					powerUps.add(new PowerUp(PowerUp.SLOWDOWN, enemy.getX(), enemy.getY()));
-				else
 					powerUps.add(new PowerUp(PowerUp.SLOWDOWN, enemy.getX(), enemy.getY()));
 				// player score
 				player.addScore(enemy.getType() + enemy.getRank());
@@ -194,12 +203,18 @@ public class PlayState extends States {
 			// collected powerUp
 			if (distance < playerRadius + powerUpLength) {
 				powerUpType = powerUp.getType();
-				if (powerUpType == PowerUp.EXTRALIFE)
+				if (powerUpType == PowerUp.EXTRALIFE) {
 					player.gainsLife();
-				if (powerUpType == PowerUp.POWER)
+					notifications.add(new Notification(powerUp.getPosX(), powerUp.getPosY(), 1000, "Extra Life"));
+				}
+				if (powerUpType == PowerUp.POWER) {
 					player.increasePower(1);
-				if (powerUpType == PowerUp.DOUBLEPOWER)
+					notifications.add(new Notification(powerUp.getPosX(), powerUp.getPosY(), 1000, "Power Up"));
+				}
+				if (powerUpType == PowerUp.DOUBLEPOWER) {
 					player.increasePower(2);
+					notifications.add(new Notification(powerUp.getPosX(), powerUp.getPosY(), 1000, "Double Power Up"));
+				}
 				if (powerUpType == PowerUp.SLOWDOWN) {
 					slowDownDelay = 6000;
 					slowDownTimer = System.nanoTime();
@@ -207,6 +222,7 @@ public class PlayState extends States {
 						enemy = enemies.get(j);
 						enemy.setSlow(true);
 					}
+					notifications.add(new Notification(powerUp.getPosX(), powerUp.getPosY(), 1000, "Slow Down"));
 				}
 				powerUps.remove(powerUp);
 				i--;
@@ -255,8 +271,13 @@ public class PlayState extends States {
 			explosion = explosions.get(i);
 			explosion.render(graphics);
 		}
+		// draw notifications        //
+		for (int i = 0; i < notifications.size(); i++) {
+			notification = notifications.get(i);
+			notification.render(graphics);
+		}
 		// set font and color to draw wave number
-		graphics.setFont(font.deriveFont(Font.PLAIN, 24));
+		graphics.setFont(font.deriveFont(Font.BOLD, 24));
 		alphaFontColor = (int) (255 * Math.sin(Math.PI * waveStartTimerDiff / waveDelay));
 		if (alphaFontColor > 255)
 			alphaFontColor = 255;
