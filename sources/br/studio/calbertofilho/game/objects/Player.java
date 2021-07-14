@@ -35,7 +35,7 @@ public class Player {
 		left = right = up = down = attack = recovering = false;
 		attackingTimer = System.nanoTime();
 		attackingDelay = 300;
-		recoveryTimer = 0;
+		recoveryTimer  = 0;
 		requiredPower = new int[] {1, 2, 3, 4, 5};
 	}
 

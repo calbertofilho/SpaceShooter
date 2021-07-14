@@ -12,58 +12,82 @@ public class Enemy {
 	private double posX, posY, dX, dY, angle, radians, speed;
 	private int radius, health, type, rank, amount;
 	private Color normalColor, hitColor;
-	private boolean ready, dead, hit;
+	private boolean ready, dead, hit, slow;
 	private long hitTimer, elapsedTime;
 	private Enemy enemy;
 
 	public Enemy(int type, int rank) {
 		this.type = type;
 		this.rank = rank;
+		radius = 3 + (type * rank);
+		health = type * rank;
 		// default enemy
 		if (type == 1) {
 			if (rank == 1) {
-				normalColor = new Color(133, 225, 75);
-				hitColor = new Color(255, 120, 82);
+				normalColor = new Color(34, 207, 190);
+				hitColor = new Color(20, 149, 76);
 				speed = 2;
-				radius = 4;
-				health = 1;
 			}
 			if (rank == 2) {
-				normalColor = new Color(102, 174, 58);
-				hitColor = new Color(204, 95, 65);
+				normalColor = new Color(28, 169, 155);
+				hitColor = new Color(15, 111, 57);
 				speed = 2;
-				radius = 6;
-				health = 2;
 			}
 			if (rank == 3) {
-				normalColor = new Color(72, 123, 40);
-				hitColor = new Color(153, 71, 48);
+				normalColor = new Color(19, 117, 108);
+				hitColor = new Color(8, 60, 30);
 				speed = 1.5;
-				radius = 8;
-				health = 3;
 			}
 			if (rank == 4) {
-				normalColor = new Color(42, 72, 23);
-				hitColor = new Color(101, 47 ,32);
+				normalColor = new Color(15, 92, 84);
+				hitColor = new Color(7, 34, 17);
 				speed = 1.5;
-				radius = 10;
-				health = 4;
 			}
 		}
 		// stronger, faster default
 		if (type == 2) {
 			if (rank == 1) {
+				normalColor = new Color(255, 165, 52);
+				hitColor = new Color(226, 91, 42);
 				speed = 3;
-				radius = 5;
-				health = 2;
+			}
+			if (rank == 2) {
+				normalColor = new Color(245, 146, 50);
+				hitColor = new Color(188, 76, 35);
+				speed = 3;
+			}
+			if (rank == 3) {
+				normalColor = new Color(194, 115, 39);
+				hitColor = new Color(137, 55, 25);
+				speed = 2.5;
+			}
+			if (rank == 4) {
+				normalColor = new Color(168, 100, 34);
+				hitColor = new Color(111, 45, 20);
+				speed = 2.5;
 			}
 		}
 		// slower, but hard to kill
 		if (type == 3) {
 			if (rank == 1) {
+				normalColor = new Color(183, 45, 179); 
+				hitColor = new Color(89, 38, 130);
 				speed = 1.5;
-				radius = 5;
-				health = 5;
+			}
+			if (rank == 2) {
+				normalColor = new Color(145, 36, 142); 
+				hitColor = new Color(63, 27, 92);
+				speed = 1.5;
+			}
+			if (rank == 3) {
+				normalColor = new Color(93, 23, 92); 
+				hitColor = new Color(28, 12, 40);
+				speed = 1;
+			}
+			if (rank == 4) {
+				normalColor = new Color(68, 17, 67); 
+				hitColor = new Color(10, 4, 15);
+				speed = 1;
 			}
 		}
 		posX = Math.random() * DrawablePanel.getGameWidth() / 2 + DrawablePanel.getGameHeight() / 4;
@@ -72,13 +96,18 @@ public class Enemy {
 		radians = Math.toRadians(angle);
 		dX = Math.cos(radians) * speed;
 		dY = Math.sin(radians) * speed;
-		ready = dead = hit = false;
+		ready = dead = hit = slow = false;
 		hitTimer = 0;
 	}
 
 	public void update() {
-		posX += dX;
-		posY += dY;
+		if (slow) {
+			posX += dX * 0.3;
+			posY += dY * 0.3;
+		} else {
+			posX += dX;
+			posY += dY;
+		}
 		if (!ready) {
 			if ((posX > radius) && (posY > radius) && (posX < DrawablePanel.getGameWidth() - radius) && (posY < DrawablePanel.getGameHeight() - radius))
 				ready = true;
@@ -132,9 +161,7 @@ public class Enemy {
 
 	public void explode() {
 		if (rank > 1) {
-			amount = 0;
-			if (type == 1)
-				amount = 3;
+			amount = getType() * getRank();
 			for (int i = 0; i < amount; i++) {
 				enemy = new Enemy(getType(), getRank() - 1);
 				enemy.posX = this.getX();
@@ -145,6 +172,7 @@ public class Enemy {
 				else
 					angle = Math.random() * 360;
 				enemy.radians = Math.toRadians(angle);
+				enemy.setSlow(this.slow);
 				PlayState.addEnemy(enemy);
 			}
 		}
@@ -162,7 +190,7 @@ public class Enemy {
 		return posY;
 	}
 
-	public double getRadius() {
+	public int getRadius() {
 		return radius;
 	}
 
@@ -172,6 +200,10 @@ public class Enemy {
 
 	public int getRank() {
 		return rank;
+	}
+
+	public void setSlow(boolean slow) {
+		this.slow = slow;
 	}
 
 }

@@ -41,8 +41,8 @@ public class Bullet {
 
 	public boolean isVisible() {
 		if ((posX < -radius) || (posY < -radius) || (posX > DrawablePanel.getGameWidth() + radius) || (posY > DrawablePanel.getGameHeight() + radius))
-			return true;
-		return false;
+			return false;
+		return true;
 	}
 
 	public double getX() {

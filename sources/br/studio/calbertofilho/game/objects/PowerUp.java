@@ -11,19 +11,25 @@ public class PowerUp {
 	private double posX, posY;
 	private int length, type, speed;
 	private Color typeColor;
-	// Types
-	//
-	// 1 -- extralife
-	// 2 -- +1 bullet power
-	// 3 -- +2 bullet power
+	public static final int EXTRALIFE = 1;
+	public static final int POWER = 2;
+	public static final int DOUBLEPOWER = 3;
+	public static final int SLOWDOWN = 4;
 
 	public PowerUp(int type, double posX, double posY) {
 		this.type = type;
 		this.posX = posX;
 		this.posY = posY;
-		length = (type == 3) ? 5 : 3;
-		typeColor = (type == 1) ? Color.GREEN : Color.ORANGE;
 		speed = 2;
+		length = 3;
+		if (type == EXTRALIFE)
+			typeColor = Color.GREEN;
+		if ((type == POWER) || (type == DOUBLEPOWER))
+			typeColor = Color.ORANGE;
+		if (type == DOUBLEPOWER)
+			length = 4;
+		if (type == SLOWDOWN)
+			typeColor = Color.CYAN;
 	}
 
 	public void update() {
@@ -43,8 +49,8 @@ public class PowerUp {
 
 	public boolean isVisible() {
 		if (posY > DrawablePanel.getGameHeight() + length)
-			return true;
-		return false;
+			return false;
+		return true;
 	}
 
 	public double getPosX() {

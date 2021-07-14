@@ -15,12 +15,12 @@ import br.studio.calbertofilho.game.controllers.handlers.Mouse;
 import br.studio.calbertofilho.game.managements.StatesManager;
 import br.studio.calbertofilho.game.objects.Bullet;
 import br.studio.calbertofilho.game.objects.Enemy;
+import br.studio.calbertofilho.game.objects.Explosion;
 import br.studio.calbertofilho.game.objects.Player;
 import br.studio.calbertofilho.game.objects.PowerUp;
 
 public class PlayState extends States {
 
-	private boolean waveStart;
 	private static Player player;
 	private int playerX, playerY, playerRadius;
 	private Bullet bullet;
@@ -34,8 +34,11 @@ public class PlayState extends States {
 	private int powerUpType;
 	private double powerUpX, powerUpY, powerUpLength;
 	private double dX, dY, distance, random;
-	private long waveStartTimer, waveStartTimerDiff;
-	private int waveNumber, waveDelay, textLength, alphaFontColor;
+	private Explosion explosion;
+	private static ArrayList<Explosion> explosions;
+	private boolean waveStart;
+	private long waveStartTimer, waveStartTimerDiff, slowDownTimer, slowDownTimerDiff;
+	private int waveNumber, waveDelay, textLength, alphaFontColor, slowDownDelay;
 	private Font font;
 	private String text;
 
@@ -45,6 +48,7 @@ public class PlayState extends States {
 		bullets = new ArrayList<Bullet>();
 		enemies = new ArrayList<Enemy>();
 		powerUps = new ArrayList<PowerUp>();
+		explosions = new ArrayList<Explosion>();
 		waveStart = true;
 		waveStartTimer = waveStartTimerDiff = waveNumber = 0;
 		waveDelay = 2000;
@@ -71,6 +75,7 @@ public class PlayState extends States {
 			waveNumber++;
 			waveStart = false;
 			waveStartTimer = System.nanoTime();
+			clearScenery();
 		} else {
 			waveStartTimerDiff = (System.nanoTime() - waveStartTimer) / 1000000;
 			if (waveStartTimerDiff > waveDelay) {
@@ -87,7 +92,7 @@ public class PlayState extends States {
 		for (int i = 0; i < bullets.size(); i++) {
 			bullet = bullets.get(i);
 			bullet.update();
-			if (bullet.isVisible())
+			if (!bullet.isVisible())
 				bullets.remove(bullet);
 		}
 		// enemies                   //
@@ -98,8 +103,15 @@ public class PlayState extends States {
 		for (int i = 0; i < powerUps.size(); i++) {
 			powerUp = powerUps.get(i);
 			powerUp.update();
-			if (powerUp.isVisible())
+			if (!powerUp.isVisible())
 				powerUps.remove(powerUp);
+		}
+		// explosions                //
+		for (int i = 0; i < explosions.size(); i++) {
+			explosion = explosions.get(i);
+			explosion.update();
+			if (!explosion.isVisible())
+				explosions.remove(explosion);
 		}
 		// collisions bullet-enemies //
 		for (int i = 0; i < bullets.size(); i++) {
@@ -130,15 +142,20 @@ public class PlayState extends States {
 				// chance for powerUp
 				random = Math.random();
 				if (random < 0.001)
-					powerUps.add(new PowerUp(1, enemy.getX(), enemy.getY()));
-				else if (random < 0.020)
-					powerUps.add(new PowerUp(3, enemy.getX(), enemy.getY()));
+					powerUps.add(new PowerUp(PowerUp.EXTRALIFE, enemy.getX(), enemy.getY()));
 				else if (random < 0.120)
-					powerUps.add(new PowerUp(2, enemy.getX(), enemy.getY()));
+					powerUps.add(new PowerUp(PowerUp.POWER, enemy.getX(), enemy.getY()));
+				else if (random < 0.020)
+					powerUps.add(new PowerUp(PowerUp.DOUBLEPOWER, enemy.getX(), enemy.getY()));
+				else if (random < 0.130)
+					powerUps.add(new PowerUp(PowerUp.SLOWDOWN, enemy.getX(), enemy.getY()));
+				else
+					powerUps.add(new PowerUp(PowerUp.SLOWDOWN, enemy.getX(), enemy.getY()));
 				// player score
 				player.addScore(enemy.getType() + enemy.getRank());
 				// enemy explode
 				enemy.explode();
+				explosions.add(new Explosion(enemy.getX(), enemy.getY(), enemy.getRadius(), enemy.getRadius() + 30));
 				// remove dead enemy
 				enemies.remove(enemy);
 				i--;
@@ -177,20 +194,45 @@ public class PlayState extends States {
 			// collected powerUp
 			if (distance < playerRadius + powerUpLength) {
 				powerUpType = powerUp.getType();
-				if (powerUpType == 1)
+				if (powerUpType == PowerUp.EXTRALIFE)
 					player.gainsLife();
-				if (powerUpType == 2)
+				if (powerUpType == PowerUp.POWER)
 					player.increasePower(1);
-				if (powerUpType == 3)
+				if (powerUpType == PowerUp.DOUBLEPOWER)
 					player.increasePower(2);
+				if (powerUpType == PowerUp.SLOWDOWN) {
+					slowDownDelay = 6000;
+					slowDownTimer = System.nanoTime();
+					for (int j = 0; j < enemies.size(); j++) {
+						enemy = enemies.get(j);
+						enemy.setSlow(true);
+					}
+				}
 				powerUps.remove(powerUp);
 				i--;
+			}
+		}
+		// slowDown                  //
+		if (slowDownTimer != 0) {
+			slowDownTimerDiff = (System.nanoTime() - slowDownTimer) / 1000000;
+			if (slowDownTimerDiff > slowDownDelay) {
+				slowDownTimer = 0;
+				for (int j = 0; j < enemies.size(); j++) {
+					enemy = enemies.get(j);
+					enemy.setSlow(false);
+				}
 			}
 		}
 	}
 
 	@Override
 	public void render(Graphics2D graphics) {
+		if (slowDownTimer != 0)
+			graphics.setColor(new Color(79, 155, 217));
+		else
+			graphics.setColor(new Color(55, 108, 151));
+		// draw the background color //
+		graphics.fillRect(0, 0, DrawablePanel.getGameWidth(), DrawablePanel.getGameHeight());
 		// draw player               //
 		player.render(graphics);
 		// draw bullets              //
@@ -203,10 +245,15 @@ public class PlayState extends States {
 			enemy = enemies.get(i);
 			enemy.render(graphics);
 		}
-		// draw bullets              //
+		// draw powerUps             //
 		for (int i = 0; i < powerUps.size(); i++) {
 			powerUp = powerUps.get(i);
 			powerUp.render(graphics);
+		}
+		// draw enemies explosions   //
+		for (int i = 0; i < explosions.size(); i++) {
+			explosion = explosions.get(i);
+			explosion.render(graphics);
 		}
 		// set font and color to draw wave number
 		graphics.setFont(font.deriveFont(Font.PLAIN, 24));
@@ -218,13 +265,15 @@ public class PlayState extends States {
 		text = "---     W A V E   " + waveNumber + "     ---";
 		textLength = (int) graphics.getFontMetrics().getStringBounds(text, graphics).getWidth();
 		graphics.drawString(text, DrawablePanel.getGameWidth() / 2 - textLength / 2, DrawablePanel.getGameHeight() / 2);
-		// set font and color to draw others text in the game
-		graphics.setFont(font.deriveFont(Font.PLAIN, 14));
-		graphics.setColor(Color.GREEN);
 		// show player lives         //
+		graphics.setFont(font.deriveFont(Font.PLAIN, 14));
+		graphics.setColor(Color.GREEN.darker());
+		graphics.setStroke(new BasicStroke(2));
+		graphics.drawRect(10, 22, 20 * player.getLives(), 28);
+		graphics.setStroke(new BasicStroke(1));
+		graphics.setColor(Color.GREEN);
 		text = "Vidas";
 		graphics.drawString(text, 10, graphics.getFontMetrics().getHeight());
-		graphics.drawRect(10, 22, 20 * player.getLives(), 28);
 		int[] x = {-player.getRadius() / 2, 0, player.getRadius() / 2};
 		int[] y = {40 + player.getRadius() / 2, 40 - (player.getRadius() / 2) * 2, 40 + player.getRadius() / 2};
 		for (int i = 0; i < player.getLives(); i++) {
@@ -241,14 +290,28 @@ public class PlayState extends States {
 			graphics.fillPolygon(x, y, x.length);
 		}
 		// show player power         //
+		graphics.setColor(Color.ORANGE);
+		text = "Power";
+		graphics.drawString(text, 10, 65);
+		graphics.fillRect(10, 70, player.getPower() * 8, 8);
 		graphics.setColor(Color.ORANGE.darker());
 		graphics.setStroke(new BasicStroke(2));
 		for (int i = 0; i < player.getRequiredPower(); i++) {
-			graphics.drawRect(10 + 8 * i, 60, 8, 8);
+			graphics.drawRect(10 + 8 * i, 70, 8, 8);
 		}
 		graphics.setStroke(new BasicStroke(1));
-		graphics.setColor(Color.ORANGE);
-		graphics.fillRect(10, 60, player.getPower() * 8, 8);
+		// show player power         //
+		graphics.setColor(Color.CYAN);
+		text = "SlowDown";
+		graphics.drawString(text, 10, 95);
+		if (slowDownTimer != 0) {
+			graphics.setColor(Color.CYAN);
+			graphics.fillRect(10, 100, (int) (100 - 100.0 * slowDownTimerDiff / slowDownDelay), 10);
+		}
+		graphics.setColor(Color.CYAN.darker());
+		graphics.setStroke(new BasicStroke(2));
+		graphics.drawRect(10, 100, 100, 10);
+		graphics.setStroke(new BasicStroke(1));
 		// show player score         //
 		graphics.setColor(Color.WHITE);
 		text = "Pontuação: " + player.getScore();
@@ -266,7 +329,6 @@ public class PlayState extends States {
 	}
 
 	private void createNewEnemies() {
-		enemies.clear();
 		if (waveNumber == 1) {
 			for (int i = 0; i < 4; i++) {
 				enemies.add(new Enemy(1, 1));
@@ -284,6 +346,13 @@ public class PlayState extends States {
 			enemies.add(new Enemy(1, 3));
 			enemies.add(new Enemy(1, 4));
 		}
+	}
+
+	private void clearScenery() {
+		slowDownDelay = 0;
+		enemies.clear();
+		bullets.clear();
+		powerUps.clear();
 	}
 
 	public static Player getPlayer() {

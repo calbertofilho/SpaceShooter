@@ -1,6 +1,5 @@
 package br.studio.calbertofilho.game.controllers.containers;
 
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -103,12 +102,7 @@ public class DrawablePanel extends JPanel implements Runnable {
 	}
 
 	private void renderGame() {
-		if (graphics != null) {
-			// draw the background color //
-			graphics.setColor(new Color(79, 155, 217));
-			graphics.fillRect(0, 0, DrawablePanel.getGameWidth(), DrawablePanel.getGameHeight());
-			gameManager.render(graphics);
-		}
+		gameManager.render(graphics);
 	}
 
 	private void drawGame() {
