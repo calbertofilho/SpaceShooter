@@ -369,10 +369,7 @@ public class PlayState extends States {
 		graphics.setStroke(new BasicStroke(1));
 	// show enemy slowDown timer //
 		if (slowDownTimer != 0) {
-			if (invincibilityTimer != 0)
-				positionSlowDownPowerUp = 125;
-			else
-				positionSlowDownPowerUp = 95;
+			positionSlowDownPowerUp = 95;
 			graphics.setColor(Color.CYAN);
 			text = "SlowDown";
 			graphics.drawString(text, 10, positionSlowDownPowerUp);
