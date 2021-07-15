@@ -15,9 +15,10 @@ public class Player {
 	private int posX, posY, radius;
 	private int dX, dY;
 	private int speed, lives, score, power, powerLevel;
-	private boolean left, right, up, down, attack, recovering;
-	private long attackingTimer, elapsedTime, attackingDelay, recoveryTimer;
-	private Color normalColor, hitColor;
+	private boolean left, right, up, down, attack, recovering, invincibility;
+	private long attackingDelay, recoveryDelay, invincibilityDelay, attackingTimer, recoveryTimer, invincibilityTimer;
+	private long elapsedTime, elapsedInvincibilityTime, elapsedRecoveringTime;
+	private Color normalColor, hitColor, invincibilityColor;
 
 	public Player() {
 		x = new int[3];
@@ -31,10 +32,13 @@ public class Player {
 		lives = 3;
 		score = 0;
 		normalColor = Color.WHITE;
-		hitColor = Color.RED;
-		left = right = up = down = attack = recovering = false;
+		hitColor = new Color(255, 139, 142);
+		invincibilityColor = Color.BLUE;
+		left = right = up = down = attack = recovering = invincibility = false;
 		attackingTimer = System.nanoTime();
-		attackingDelay = 300;
+		attackingDelay = 400;
+		recoveryDelay = 3000;
+		invincibilityDelay = 15000;
 		recoveryTimer  = 0;
 		requiredPower = new int[] {1, 2, 3, 4, 5};
 	}
@@ -53,6 +57,10 @@ public class Player {
 
 	public int getLives() {
 		return lives;
+	}
+
+	public boolean isDead() {
+		return lives <= 0;
 	}
 
 	public boolean isRecovering() {
@@ -81,8 +89,19 @@ public class Player {
 		recoveryTimer = System.nanoTime();
 	}
 
+	public int getInvincibilityDelay() {
+		return (int) invincibilityDelay;
+	}
+
 	public void increasePower(int power) {
-		this.power += power;
+		if (this.power < 5)
+			this.power += power;
+		if (powerLevel == 4) {
+			if (power > requiredPower[powerLevel]) {
+				power = requiredPower[powerLevel];
+			}
+			return;
+		}
 		if (this.power >= requiredPower[powerLevel]) {
 			this.power -= requiredPower[powerLevel];
 			powerLevel++;
@@ -93,12 +112,29 @@ public class Player {
 		return powerLevel;
 	}
 
+	public int getSpeed() {
+		return speed;
+	}
+
 	public int getPower() {
 		return power;
 	}
 
 	public int getRequiredPower() {
 		return requiredPower[powerLevel];
+	}
+
+	public void setAttackingVelocity(long attackingDelay) {
+		if (this.attackingDelay > 100)
+			this.attackingDelay -= attackingDelay;
+	}
+
+	public void setInvincibility(boolean invincibility) {
+		this.invincibility = invincibility;
+	}
+
+	public boolean isInvincible() {
+		return invincibility;
 	}
 
 	public void update() {
@@ -130,24 +166,43 @@ public class Player {
 			elapsedTime = (System.nanoTime() - attackingTimer) / 1000000;
 			if (elapsedTime > attackingDelay) {
 				attackingTimer = System.nanoTime();
-				if (powerLevel < 2)
+				if (powerLevel == 0) {
 					PlayState.addBullet(new Bullet(270, posX, posY - radius * 2));
-				else if (powerLevel < 4) {
+				}
+				else if (powerLevel == 1) {
 					PlayState.addBullet(new Bullet(270, posX + 5, posY - radius * 2));
 					PlayState.addBullet(new Bullet(270, posX - 5, posY - radius * 2));
-				} else {
+				} else if (powerLevel == 2) {
 					PlayState.addBullet(new Bullet(275, posX + 5, posY - radius * 2));
 					PlayState.addBullet(new Bullet(270, posX, posY - radius * 2));
 					PlayState.addBullet(new Bullet(265, posX - 5, posY - radius * 2));
+				} else if (powerLevel == 3) {
+					PlayState.addBullet(new Bullet(276, posX + 5, posY - radius * 2));
+					PlayState.addBullet(new Bullet(271, posX + 5, posY - radius * 2));
+					PlayState.addBullet(new Bullet(269, posX - 5, posY - radius * 2));
+					PlayState.addBullet(new Bullet(264, posX - 5, posY - radius * 2));
+				} else {
+					PlayState.addBullet(new Bullet(278, posX + 5, posY - radius * 2));
+					PlayState.addBullet(new Bullet(274, posX + 5, posY - radius * 2));
+					PlayState.addBullet(new Bullet(270, posX, posY - radius * 2));
+					PlayState.addBullet(new Bullet(266, posX - 5, posY - radius * 2));
+					PlayState.addBullet(new Bullet(262, posX - 5, posY - radius * 2));
 				}
 			}
 		}
 	// invincible after hit //
 		if (recovering) {
-			elapsedTime = (System.nanoTime() - recoveryTimer) / 1000000;
-			if (elapsedTime > 2000) {
+			elapsedRecoveringTime = (System.nanoTime() - recoveryTimer) / 1000000;
+			if (elapsedRecoveringTime > recoveryDelay) {
 				recovering = false;
 				recoveryTimer = 0;
+			}
+		}
+	// invincibility        //
+		if (invincibility) {
+			elapsedInvincibilityTime = (System.nanoTime() - invincibilityTimer) / 1000000;
+			if (elapsedInvincibilityTime > invincibilityDelay) {
+				invincibilityTimer = 0;
 			}
 		}
 	}
@@ -169,6 +224,19 @@ public class Player {
 			// fill the object     //
 			graphics.setColor(hitColor);
 			graphics.fillPolygon(x, y, x.length);
+		} else if (invincibility) {
+			// draw a contour line //
+			graphics.setStroke(new BasicStroke(3));
+			graphics.setColor(normalColor.darker());
+			graphics.drawPolygon(x, y, x.length);
+			graphics.setColor(invincibilityColor.darker());
+			graphics.drawOval((int) posX - radius * 3, (int) posY - radius * 3, radius * 6, radius * 6);
+			graphics.setStroke(new BasicStroke(1));
+			// fill the object     //
+			graphics.setColor(normalColor);
+			graphics.fillPolygon(x, y, x.length);
+			graphics.setColor(new Color(invincibilityColor.getRed(), invincibilityColor.getGreen(), invincibilityColor.getBlue(), 128));
+			graphics.fillOval((int) posX - radius * 3, (int) posY - radius * 3, radius * 6, radius * 6);
 		} else {
 			// draw a contour line //
 			graphics.setStroke(new BasicStroke(3));

@@ -15,6 +15,7 @@ public class PowerUp {
 	public static final int POWER = 2;
 	public static final int DOUBLEPOWER = 3;
 	public static final int SLOWDOWN = 4;
+	public static final int INVINCIBILITY = 5;
 
 	public PowerUp(int type, double posX, double posY) {
 		this.type = type;
@@ -30,6 +31,8 @@ public class PowerUp {
 			length = 4;
 		if (type == SLOWDOWN)
 			typeColor = Color.CYAN;
+		if (type == INVINCIBILITY)
+			typeColor = Color.MAGENTA;
 	}
 
 	public void update() {

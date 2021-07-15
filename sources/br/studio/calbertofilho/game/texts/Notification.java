@@ -10,8 +10,8 @@ import java.io.IOException;
 public class Notification {
 
 	private double posX, posY;
-	private long time, start, elapsed;
-	private int textLength;
+	private long time, start, elapsed, elapsedTime;
+	private int textLength, alphaFontColor;
 	private String message;
 	private Font font;
 
@@ -33,18 +33,22 @@ public class Notification {
 	}
 
 	public void update() {
-		elapsed = (System.nanoTime() - start) / 1000000;
+		elapsedTime = (System.nanoTime() - start) / 1000000;
 	}
 
 	public void render(Graphics2D graphics) {
 		graphics.setFont(font.deriveFont(Font.PLAIN, 12));
-		graphics.setColor(Color.YELLOW);
+		elapsed = (System.nanoTime() - start) / 1000000;
+		alphaFontColor = (int) (255 * Math.sin(Math.PI * elapsed / time));
+		alphaFontColor = (alphaFontColor > 255) ? 255 : alphaFontColor;
+		alphaFontColor = (alphaFontColor < 0) ? 0 : alphaFontColor;
+		graphics.setColor(new Color(255, 255, 0, alphaFontColor));
 		textLength = (int) graphics.getFontMetrics().getStringBounds(message, graphics).getWidth();
-		graphics.drawString(message, (int) posX - textLength / 2, (int) posY);
+		graphics.drawString(message, (int) posX - (textLength / 2), (int) posY);
 	}
 
 	public boolean isVisible() {
-		if (elapsed > time)
+		if (elapsedTime > time)
 			return false;
 		return true;
 	}

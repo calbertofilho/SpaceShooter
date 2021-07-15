@@ -206,4 +206,9 @@ public class Enemy {
 		this.slow = slow;
 	}
 
+	public void rebounds() {
+		dX = -(dX * 1.25);
+		dY = -(dY * 1.25);
+	}
+
 }

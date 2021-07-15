@@ -16,7 +16,7 @@ public class DrawablePanel extends JPanel implements Runnable {
 
 	private static Dimension gameDimensions;
 	private Thread thread;
-	private boolean running;
+	private static boolean running;
 	private Keyboard keyboard;
 	private Mouse mouse;
 	private BufferedImage image;
@@ -122,6 +122,10 @@ public class DrawablePanel extends JPanel implements Runnable {
 
 	public static int getGameHeight() {
 		return (int) gameDimensions.getHeight();
+	}
+
+	public static void setRunning(boolean running) {
+		DrawablePanel.running = running;
 	}
 
 }
