@@ -209,7 +209,6 @@ public class Enemy {
 	public void rebounds() {
 		dX = -dX;
 		dY = -dY;
-		// set velocity to rebound
 	}
 
 }

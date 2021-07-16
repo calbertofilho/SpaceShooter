@@ -156,16 +156,14 @@ public class PlayState extends States {
 				random = Math.random();
 				if (random < 0.001)
 					powerUps.add(new PowerUp(PowerUp.EXTRALIFE, enemy.getX(), enemy.getY()));
+				else if (random < 0.010)
+					powerUps.add(new PowerUp(PowerUp.DOUBLEPOWER, enemy.getX(), enemy.getY()));
+				else if (random < 0.020)
+					powerUps.add(new PowerUp(PowerUp.INVINCIBILITY, enemy.getX(), enemy.getY()));
 				else if (random < 0.100)
 					powerUps.add(new PowerUp(PowerUp.POWER, enemy.getX(), enemy.getY()));
-				else if (random < 0.020)
-					powerUps.add(new PowerUp(PowerUp.DOUBLEPOWER, enemy.getX(), enemy.getY()));
-				else if (random < 0.130)
+				else if (random < 0.101)
 					powerUps.add(new PowerUp(PowerUp.SLOWDOWN, enemy.getX(), enemy.getY()));
-				else if (random < 0.010)
-					powerUps.add(new PowerUp(PowerUp.INVINCIBILITY, enemy.getX(), enemy.getY()));
-//				else
-//					powerUps.add(new PowerUp(PowerUp.INVINCIBILITY, enemy.getX(), enemy.getY()));
 				// player score
 				player.addScore(enemy.getType() + enemy.getRank());
 				// enemy explode
@@ -215,16 +213,19 @@ public class PlayState extends States {
 				if (powerUpType == PowerUp.EXTRALIFE) {
 					player.gainsLife();
 					notifications.add(new Notification(powerUp.getPosX(), powerUp.getPosY(), 1000, "Vida Extra"));
+					player.addScore(100);
 				}
 				if (powerUpType == PowerUp.POWER) {
 					player.increasePower(1);
-					player.setAttackingVelocity(20);
+					player.setAttackingVelocity(10);
 					notifications.add(new Notification(powerUp.getPosX(), powerUp.getPosY(), 1000, "Power Up"));
+					player.addScore(10);
 				}
 				if (powerUpType == PowerUp.DOUBLEPOWER) {
 					player.increasePower(2);
-					player.setAttackingVelocity(40);
+					player.setAttackingVelocity(20);
 					notifications.add(new Notification(powerUp.getPosX(), powerUp.getPosY(), 1000, "Double Power Up"));
+					player.addScore(20);
 				}
 				if (powerUpType == PowerUp.SLOWDOWN) {
 					slowDownDelay = 10000;
@@ -234,12 +235,14 @@ public class PlayState extends States {
 						enemy.setSlow(true);
 					}
 					notifications.add(new Notification(powerUp.getPosX(), powerUp.getPosY(), 1000, "Slow Down"));
+					player.addScore(5);
 				}
 				if (powerUpType == PowerUp.INVINCIBILITY) {
 					invincibilityDelay = player.getInvincibilityDelay();
 					invincibilityTimer = System.nanoTime();
 					player.setInvincibility(true);
 					notifications.add(new Notification(powerUp.getPosX(), powerUp.getPosY(), 1000, "Invencibilidade"));
+					player.addScore(50);
 				}
 				powerUps.remove(powerUp);
 				i--;
@@ -396,16 +399,19 @@ public class PlayState extends States {
 			graphics.drawRect(10, positionInvicibilityPowerUp + 5, 100, 10);
 			graphics.setStroke(new BasicStroke(1));
 		}
-	// show player score         //
+	// show wave number          //
 		graphics.setColor(Color.WHITE);
-		text = "Pontuação: " + player.getScore();
+		text = (waveNumber == 11) ?	"PARABÉNS !!!" : "--- WAVE " + waveNumber + " ---";
 		graphics.drawString(text, (DrawablePanel.getGameWidth() - graphics.getFontMetrics().stringWidth(text)) - 5, graphics.getFontMetrics().getHeight());
+	// show player score         //
+		text = "Pontuação: " + player.getScore();
+		graphics.drawString(text, (DrawablePanel.getGameWidth() - graphics.getFontMetrics().stringWidth(text)) - 5, 2 * graphics.getFontMetrics().getHeight());
 	// show bullets counter      //
 		text = "Disparos: " + bullets.size();
-		graphics.drawString(text, (DrawablePanel.getGameWidth() - graphics.getFontMetrics().stringWidth(text)) - 5, 2 * graphics.getFontMetrics().getHeight());
+		graphics.drawString(text, (DrawablePanel.getGameWidth() - graphics.getFontMetrics().stringWidth(text)) - 5, 3 * graphics.getFontMetrics().getHeight());
 	// show enemies counter      //
 		text = "Inimigos: " + enemies.size();
-		graphics.drawString(text, (DrawablePanel.getGameWidth() - graphics.getFontMetrics().stringWidth(text)) - 5, 3 * graphics.getFontMetrics().getHeight());
+		graphics.drawString(text, (DrawablePanel.getGameWidth() - graphics.getFontMetrics().stringWidth(text)) - 5, 4 * graphics.getFontMetrics().getHeight());
 	// show FPS counter          //
 		graphics.setColor(Color.YELLOW);
 		text = String.format("FPS: %.2f", DrawablePanel.getGameFPS());
@@ -455,21 +461,16 @@ public class PlayState extends States {
 			enemies.add(new Enemy(2, 4));
 		}
 		if (waveNumber == 7) {
-			enemies.add(new Enemy(1, 1));
-			enemies.add(new Enemy(1, 2));
-			enemies.add(new Enemy(1, 3));
 			enemies.add(new Enemy(1, 4));
-			enemies.add(new Enemy(2, 1));
-			enemies.add(new Enemy(2, 2));
-			enemies.add(new Enemy(2, 3));
 			enemies.add(new Enemy(2, 4));
+			enemies.add(new Enemy(3, 1));
+			enemies.add(new Enemy(3, 1));
 			enemies.add(new Enemy(3, 1));
 		}
 		if (waveNumber == 8) {
 			enemies.add(new Enemy(1, 4));
 			enemies.add(new Enemy(2, 4));
 			for (int i = 0; i < 2; i++) {
-				enemies.add(new Enemy(3, 1));
 				enemies.add(new Enemy(3, 2));
 			}
 		}
@@ -477,18 +478,13 @@ public class PlayState extends States {
 			for (int i = 0; i < 2; i++) {
 				enemies.add(new Enemy(1, 4));
 				enemies.add(new Enemy(2, 4));
-				enemies.add(new Enemy(3, 1));
-				enemies.add(new Enemy(3, 2));
-				enemies.add(new Enemy(3, 3));
 			}
+			enemies.add(new Enemy(3, 3));
 		}
 		if (waveNumber == 10) {
 			enemies.add(new Enemy(1, 4));
 			enemies.add(new Enemy(2, 4));
-			enemies.add(new Enemy(3, 1));
-			enemies.add(new Enemy(3, 2));
-			enemies.add(new Enemy(3, 3));
-			for (int i = 0; i < 3; i++) {
+			for (int i = 0; i < 2; i++) {
 				enemies.add(new Enemy(3, 4));
 			}
 		}

@@ -32,13 +32,13 @@ public class Player {
 		lives = 3;
 		score = 0;
 		normalColor = Color.WHITE;
-		hitColor = new Color(255, 139, 142);
-		invincibilityColor = Color.BLUE;
+		hitColor = new Color(255, 139, 142, 128);
+		invincibilityColor = new Color(192, 69, 224);
 		left = right = up = down = attack = recovering = invincibility = false;
 		attackingTimer = System.nanoTime();
 		attackingDelay = 400;
 		recoveryDelay = 3000;
-		invincibilityDelay = 15000;
+		invincibilityDelay = 4000;
 		recoveryTimer  = 0;
 		requiredPower = new int[] {1, 2, 3, 4, 5};
 	}
@@ -60,7 +60,8 @@ public class Player {
 	}
 
 	public boolean isDead() {
-		return lives <= 0;
+		return false; 
+//		return lives <= 0;
 	}
 
 	public boolean isRecovering() {
@@ -89,11 +90,10 @@ public class Player {
 		recoveryTimer = System.nanoTime();
 	}
 
-	public int getInvincibilityDelay() {
-		return (int) invincibilityDelay;
-	}
-
 	public void increasePower(int power) {
+		if (this.invincibilityDelay < 60000)
+			invincibilityDelay += 4000;
+		System.out.println(invincibilityDelay);
 		if (this.power < 5)
 			this.power += power;
 		if (powerLevel == 4) {
@@ -127,6 +127,10 @@ public class Player {
 	public void setAttackingVelocity(long attackingDelay) {
 		if (this.attackingDelay > 100)
 			this.attackingDelay -= attackingDelay;
+	}
+
+	public int getInvincibilityDelay() {
+		return (int) invincibilityDelay;
 	}
 
 	public void setInvincibility(boolean invincibility) {
@@ -170,23 +174,23 @@ public class Player {
 					PlayState.addBullet(new Bullet(270, posX, posY - radius * 2));
 				}
 				else if (powerLevel == 1) {
-					PlayState.addBullet(new Bullet(270, posX + 5, posY - radius * 2));
-					PlayState.addBullet(new Bullet(270, posX - 5, posY - radius * 2));
+					PlayState.addBullet(new Bullet(272, posX + 5, posY - radius * 2));
+					PlayState.addBullet(new Bullet(268, posX - 5, posY - radius * 2));
 				} else if (powerLevel == 2) {
 					PlayState.addBullet(new Bullet(275, posX + 5, posY - radius * 2));
 					PlayState.addBullet(new Bullet(270, posX, posY - radius * 2));
 					PlayState.addBullet(new Bullet(265, posX - 5, posY - radius * 2));
 				} else if (powerLevel == 3) {
-					PlayState.addBullet(new Bullet(276, posX + 5, posY - radius * 2));
+					PlayState.addBullet(new Bullet(275, posX + 5, posY - radius * 2));
 					PlayState.addBullet(new Bullet(271, posX + 5, posY - radius * 2));
 					PlayState.addBullet(new Bullet(269, posX - 5, posY - radius * 2));
-					PlayState.addBullet(new Bullet(264, posX - 5, posY - radius * 2));
+					PlayState.addBullet(new Bullet(265, posX - 5, posY - radius * 2));
 				} else {
-					PlayState.addBullet(new Bullet(278, posX + 5, posY - radius * 2));
-					PlayState.addBullet(new Bullet(274, posX + 5, posY - radius * 2));
+					PlayState.addBullet(new Bullet(280, posX + 5, posY - radius * 2));
+					PlayState.addBullet(new Bullet(275, posX + 5, posY - radius * 2));
 					PlayState.addBullet(new Bullet(270, posX, posY - radius * 2));
-					PlayState.addBullet(new Bullet(266, posX - 5, posY - radius * 2));
-					PlayState.addBullet(new Bullet(262, posX - 5, posY - radius * 2));
+					PlayState.addBullet(new Bullet(265, posX - 5, posY - radius * 2));
+					PlayState.addBullet(new Bullet(260, posX - 5, posY - radius * 2));
 				}
 			}
 		}
