@@ -93,7 +93,6 @@ public class Player {
 	public void increasePower(int power) {
 		if (this.invincibilityDelay < 60000)
 			invincibilityDelay += 4000;
-		System.out.println(invincibilityDelay);
 		if (this.power < 5)
 			this.power += power;
 		if (powerLevel == 4) {

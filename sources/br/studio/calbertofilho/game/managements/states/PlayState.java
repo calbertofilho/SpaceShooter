@@ -42,8 +42,8 @@ public class PlayState extends States {
 	private boolean waveStart;
 	private long waveStartTimer, waveStartTimerDiff, slowDownTimer, slowDownTimerDiff, invincibilityTimer, invincibilityTimerDiff;
 	private int waveNumber, waveDelay, textLength, alphaFontColor, slowDownDelay, invincibilityDelay;
-	private Font font;
-	private String text;
+	private Font textFont, scoreFont;
+	private String text, scores;
 
 	public PlayState(StatesManager manager) {
 		super(manager);
@@ -61,7 +61,8 @@ public class PlayState extends States {
 
 	private void loadResources() {
 		try {
-			font = Font.createFont(Font.TRUETYPE_FONT, new File("resources\\assets\\fonts\\Audiowide-Regular.ttf"));
+			textFont = Font.createFont(Font.TRUETYPE_FONT, new File("resources\\assets\\fonts\\Audiowide-Regular.ttf"));
+			scoreFont = Font.createFont(Font.TRUETYPE_FONT, new File("resources\\assets\\fonts\\04B_19__.TTF"));
 		} catch (FontFormatException | IOException e) {
 			e.printStackTrace();
 		}
@@ -325,7 +326,7 @@ public class PlayState extends States {
 		}
 	// draw wave number          //
 		// set font and color to draw wave number
-		graphics.setFont(font.deriveFont(Font.BOLD, 24));
+		graphics.setFont(textFont.deriveFont(Font.BOLD, 24));
 		alphaFontColor = (int) (255 * Math.sin(Math.PI * waveStartTimerDiff / waveDelay));
 		alphaFontColor = (alphaFontColor > 255) ? 255 : alphaFontColor;
 		alphaFontColor = (alphaFontColor < 0) ? 0 : alphaFontColor;
@@ -341,7 +342,7 @@ public class PlayState extends States {
 		graphics.drawRect(10, 24, 15 * player.getLives(), 18);
 		graphics.setStroke(new BasicStroke(1));
 		graphics.setColor(Color.GREEN.darker());
-		graphics.setFont(font.deriveFont(Font.PLAIN, 14));
+		graphics.setFont(textFont.deriveFont(Font.PLAIN, 14));
 		text = "Vidas";
 		graphics.drawString(text, 10, 2 + graphics.getFontMetrics().getHeight());
 		int[] x = {3 - player.getRadius() / 4, 3, 3 + player.getRadius() / 4};
@@ -399,22 +400,24 @@ public class PlayState extends States {
 			graphics.drawRect(10, positionInvicibilityPowerUp + 5, 100, 10);
 			graphics.setStroke(new BasicStroke(1));
 		}
-	// show wave number          //
+//	// show wave number          //
 		graphics.setColor(Color.WHITE);
-		text = (waveNumber == 11) ?	"PARABÉNS !!!" : "--- WAVE " + waveNumber + " ---";
-		graphics.drawString(text, (DrawablePanel.getGameWidth() - graphics.getFontMetrics().stringWidth(text)) - 5, graphics.getFontMetrics().getHeight());
+//		text = (waveNumber == 11) ?	"PARABÉNS !!!" : "--- WAVE " + waveNumber + " ---";
+//		graphics.drawString(text, (DrawablePanel.getGameWidth() - graphics.getFontMetrics().stringWidth(text)) - 5, graphics.getFontMetrics().getHeight());
 	// show player score         //
-		text = "Pontuação: " + player.getScore();
-		graphics.drawString(text, (DrawablePanel.getGameWidth() - graphics.getFontMetrics().stringWidth(text)) - 5, 2 * graphics.getFontMetrics().getHeight());
+		scores = String.valueOf(player.getScore());
+		graphics.setFont(scoreFont.deriveFont(Font.PLAIN, 24));
+		graphics.drawString(scores, (DrawablePanel.getGameWidth() - graphics.getFontMetrics().stringWidth(scores)) - 5, graphics.getFontMetrics().getHeight());
 	// show bullets counter      //
-		text = "Disparos: " + bullets.size();
-		graphics.drawString(text, (DrawablePanel.getGameWidth() - graphics.getFontMetrics().stringWidth(text)) - 5, 3 * graphics.getFontMetrics().getHeight());
-	// show enemies counter      //
-		text = "Inimigos: " + enemies.size();
-		graphics.drawString(text, (DrawablePanel.getGameWidth() - graphics.getFontMetrics().stringWidth(text)) - 5, 4 * graphics.getFontMetrics().getHeight());
+		graphics.setFont(textFont.deriveFont(Font.PLAIN, 14));
+//		text = "Disparos: " + bullets.size();
+//		graphics.drawString(text, (DrawablePanel.getGameWidth() - graphics.getFontMetrics().stringWidth(text)) - 5, 3 * graphics.getFontMetrics().getHeight());
+//	// show enemies counter      //
+//		text = "Inimigos: " + enemies.size();
+//		graphics.drawString(text, (DrawablePanel.getGameWidth() - graphics.getFontMetrics().stringWidth(text)) - 5, 4 * graphics.getFontMetrics().getHeight());
 	// show FPS counter          //
 		graphics.setColor(Color.YELLOW);
-		text = String.format("FPS: %.2f", DrawablePanel.getGameFPS());
+		text = String.format("%.2f fps", DrawablePanel.getGameFPS());
 		graphics.drawString(text, 5, DrawablePanel.getGameHeight() - 5);
 	}
 
