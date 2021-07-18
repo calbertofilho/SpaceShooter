@@ -9,11 +9,11 @@ import br.studio.calbertofilho.game.managements.states.PlayState;
 
 public class Enemy {
 
-	private double posX, posY, dX, dY, angle, radians, speed;
+	private double posX, posY, dX, dY, angle, radians, speed, reboundSpeed, deacc;
 	private int radius, health, type, rank, amount;
 	private Color normalColor, hitColor;
 	private boolean ready, dead, hit, slow;
-	private long hitTimer, elapsedTime;
+	private long hitTimer, elapsedTime, reboundTimer, reboundElapsedTime;;
 	private Enemy enemy;
 
 	public Enemy(int type, int rank) {
@@ -21,6 +21,8 @@ public class Enemy {
 		this.rank = rank;
 		radius = 3 + (type * rank);
 		health = type * rank;
+		reboundSpeed = 0;
+		deacc = 0.3f;
 		// default enemy
 		if (type == 1) {
 			if (rank == 1) {
@@ -80,7 +82,7 @@ public class Enemy {
 				speed = 1.5;
 			}
 			if (rank == 3) {
-				normalColor = new Color(93, 23, 92); 
+				normalColor = new Color(93, 23, 92);
 				hitColor = new Color(28, 12, 40);
 				speed = 1;
 			}
@@ -105,8 +107,15 @@ public class Enemy {
 			posX += dX * 0.3;
 			posY += dY * 0.3;
 		} else {
-			posX += dX;
-			posY += dY;
+			// identificar o sinal de dX e dYçççcclll
+			posX += dX + reboundSpeed;
+			posY += dY + reboundSpeed;
+			reboundElapsedTime = (System.nanoTime() - reboundTimer) / 1000000;
+			if (reboundElapsedTime > 50) {
+				reboundSpeed -= deacc;
+				if (reboundSpeed < 0)
+					reboundSpeed = 0;
+			}
 		}
 		if (!ready) {
 			if ((posX > radius) && (posY > radius) && (posX < DrawablePanel.getGameWidth() - radius) && (posY < DrawablePanel.getGameHeight() - radius))
@@ -207,6 +216,8 @@ public class Enemy {
 	}
 
 	public void rebounds() {
+		reboundTimer = System.nanoTime();
+		reboundSpeed = 5;
 		dX = -dX;
 		dY = -dY;
 	}

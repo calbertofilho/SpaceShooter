@@ -60,8 +60,8 @@ public class Player {
 	}
 
 	public boolean isDead() {
-		return false; 
-//		return lives <= 0;
+//		return false; 
+		return lives <= 0;
 	}
 
 	public boolean isRecovering() {
