@@ -165,8 +165,6 @@ public class PlayState extends States {
 					powerUps.add(new PowerUp(PowerUp.POWER, enemy.getX(), enemy.getY()));
 				else if (random < 0.101)
 					powerUps.add(new PowerUp(PowerUp.SLOWDOWN, enemy.getX(), enemy.getY()));
-//				else
-//					powerUps.add(new PowerUp(PowerUp.INVINCIBILITY, enemy.getX(), enemy.getY()));
 				// player score
 				player.addScore(enemy.getType() + enemy.getRank());
 				// enemy explode

@@ -22,7 +22,7 @@ public class Enemy {
 		radius = 3 + (type * rank);
 		health = type * rank;
 		reboundSpeed = 0;
-		deacc = 0.3f;
+		deacc = 0.2f;
 		// default enemy
 		if (type == 1) {
 			if (rank == 1) {
@@ -104,18 +104,17 @@ public class Enemy {
 
 	public void update() {
 		if (slow) {
-			posX += dX * 0.3;
-			posY += dY * 0.3;
+			posX += dX + reboundSpeed * Math.signum(dX) * 0.3;
+			posY += dY + reboundSpeed * Math.signum(dY) * 0.3;
 		} else {
-			// identificar o sinal de dX e dYçççcclll
-			posX += dX + reboundSpeed;
-			posY += dY + reboundSpeed;
-			reboundElapsedTime = (System.nanoTime() - reboundTimer) / 1000000;
-			if (reboundElapsedTime > 50) {
-				reboundSpeed -= deacc;
-				if (reboundSpeed < 0)
-					reboundSpeed = 0;
-			}
+			posX += dX + reboundSpeed * Math.signum(dX);
+			posY += dY + reboundSpeed * Math.signum(dY);
+		}
+		reboundElapsedTime = (System.nanoTime() - reboundTimer) / 1000000;
+		if (reboundElapsedTime > 50) {
+			reboundSpeed -= deacc;
+			if (reboundSpeed < 0)
+				reboundSpeed = 0;
 		}
 		if (!ready) {
 			if ((posX > radius) && (posY > radius) && (posX < DrawablePanel.getGameWidth() - radius) && (posY < DrawablePanel.getGameHeight() - radius))
@@ -217,7 +216,7 @@ public class Enemy {
 
 	public void rebounds() {
 		reboundTimer = System.nanoTime();
-		reboundSpeed = 5;
+		reboundSpeed = 10;
 		dX = -dX;
 		dY = -dY;
 	}
