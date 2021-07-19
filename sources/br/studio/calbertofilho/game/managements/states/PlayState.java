@@ -39,7 +39,7 @@ public class PlayState extends States {
 	private static ArrayList<Explosion> explosions;
 	private Notification notification;
 	private ArrayList<Notification> notifications;
-	private boolean waveStart;
+	private boolean waveStart, pause;
 	private long waveStartTimer, waveStartTimerDiff, slowDownTimer, slowDownTimerDiff, invincibilityTimer, invincibilityTimerDiff;
 	private int waveNumber, waveDelay, textLength, alphaFontColor, slowDownDelay, invincibilityDelay;
 	private Font textFont, scoreFont;
@@ -54,6 +54,7 @@ public class PlayState extends States {
 		explosions = new ArrayList<Explosion>();
 		notifications = new ArrayList<Notification>();
 		waveStart = true;
+		pause = false;
 		waveStartTimer = waveStartTimerDiff = waveNumber = 0;
 		waveDelay = 2000;
 		loadResources();
@@ -70,223 +71,234 @@ public class PlayState extends States {
 
 	@Override
 	public void input(Mouse mouse, Keyboard keyboard) {
+		keyboard.pauseKey.tick();
 		player.input(keyboard, mouse);
+		if (keyboard.pauseKey.isClicked()) {
+			if (manager.getState(StatesManager.PAUSE)) {
+				manager.pop(StatesManager.PAUSE);
+				pause = false;
+			} else {
+				manager.add(StatesManager.PAUSE);
+				pause = true;
+			}
+		}
 	}
 
 	@Override
 	public void update() {
-		// new wave                  //
-		if ((waveStartTimer == 0) && (enemies.size() == 0)) {
-			waveNumber++;
-			waveStart = false;
-			waveStartTimer = System.nanoTime();
-			clearScenery();
-		} else {
-			waveStartTimerDiff = (System.nanoTime() - waveStartTimer) / 1000000;
-			if (waveStartTimerDiff > waveDelay) {
-				waveStart = true;
-				waveStartTimer = waveStartTimerDiff = 0;
-				if (waveNumber >= 11)
-					congratulations();
-			}
-		}
-		// create enemies            //
-		if (waveStart && (enemies.size() == 0))
-			createNewEnemies();
-		// player                    //
-		player.update();
-		// bullets                   //
-		for (int i = 0; i < bullets.size(); i++) {
-			bullet = bullets.get(i);
-			bullet.update();
-			if (!bullet.isVisible())
-				bullets.remove(bullet);
-		}
-		// enemies                   //
-		for (Enemy enemy : enemies) {
-			enemy.update();
-		}
-		// powerUps                  //
-		for (int i = 0; i < powerUps.size(); i++) {
-			powerUp = powerUps.get(i);
-			powerUp.update();
-			if (!powerUp.isVisible())
-				powerUps.remove(powerUp);
-		}
-		// explosions                //
-		for (int i = 0; i < explosions.size(); i++) {
-			explosion = explosions.get(i);
-			explosion.update();
-			if (!explosion.isVisible())
-				explosions.remove(explosion);
-		}
-		// notifications             //
-		for (int i = 0; i < notifications.size(); i++) {
-			notification = notifications.get(i);
-			notification.update();
-			if (!notification.isVisible())
-				notifications.remove(notification);
-		}
-		// collisions bullet-enemies //
-		for (int i = 0; i < bullets.size(); i++) {
-			bullet = bullets.get(i);
-			bulletX = bullet.getX();
-			bulletY = bullet.getY();
-			bulletRadius = bullet.getRadius();
-			for (int j = 0; j < enemies.size(); j++) {
-				enemy = enemies.get(j);
-				enemyX = enemy.getX();
-				enemyY = enemy.getY();
-				enemyRadius = enemy.getRadius();
-				dX = bulletX - enemyX;
-				dY = bulletY - enemyY;
-				distance = Math.sqrt(dX * dX + dY * dY);
-				if (distance < bulletRadius + enemyRadius) {
-					enemy.hit();
-					bullets.remove(i);
-					i--;
-					break;
+		if (!pause) {
+			// new wave                  //
+			if ((waveStartTimer == 0) && (enemies.size() == 0)) {
+				waveNumber++;
+				waveStart = false;
+				waveStartTimer = System.nanoTime();
+				clearScenery();
+			} else {
+				waveStartTimerDiff = (System.nanoTime() - waveStartTimer) / 1000000;
+				if (waveStartTimerDiff > waveDelay) {
+					waveStart = true;
+					waveStartTimer = waveStartTimerDiff = 0;
+					if (waveNumber >= 11)
+						congratulations();
 				}
 			}
-		}
-		// check dead enemies        //
-		for (int i = 0; i < enemies.size(); i++) {
-			enemy = enemies.get(i);
-			if (enemy.isDead()) {
-				// chance for powerUp
-				random = Math.random();
-				if (random < 0.001)
-					powerUps.add(new PowerUp(PowerUp.EXTRALIFE, enemy.getX(), enemy.getY()));
-				else if (random < 0.010)
-					powerUps.add(new PowerUp(PowerUp.DOUBLEPOWER, enemy.getX(), enemy.getY()));
-				else if (random < 0.020)
-					powerUps.add(new PowerUp(PowerUp.INVINCIBILITY, enemy.getX(), enemy.getY()));
-				else if (random < 0.100)
-					powerUps.add(new PowerUp(PowerUp.POWER, enemy.getX(), enemy.getY()));
-				else if (random < 0.101)
-					powerUps.add(new PowerUp(PowerUp.SLOWDOWN, enemy.getX(), enemy.getY()));
-				// player score
-				player.addScore(enemy.getType() + enemy.getRank());
-				// enemy explode
-				enemy.explode();
-				explosions.add(new Explosion(enemy.getX(), enemy.getY(), enemy.getRadius(), enemy.getRadius() + 30));
-				// remove dead enemy
-				enemies.remove(enemy);
-				i--;
+			// create enemies            //
+			if (waveStart && (enemies.size() == 0))
+				createNewEnemies();
+			// player                    //
+			player.update();
+			// bullets                   //
+			for (int i = 0; i < bullets.size(); i++) {
+				bullet = bullets.get(i);
+				bullet.update();
+				if (!bullet.isVisible())
+					bullets.remove(bullet);
 			}
-		}
-		// check dead player         //
-		if (player.isDead())
-			gameOver();
-		// collisions player-enemy   //
-		if ((!player.isRecovering()) && (!player.isInvincible())) {
+			// enemies                   //
+			for (Enemy enemy : enemies) {
+				enemy.update();
+			}
+			// powerUps                  //
+			for (int i = 0; i < powerUps.size(); i++) {
+				powerUp = powerUps.get(i);
+				powerUp.update();
+				if (!powerUp.isVisible())
+					powerUps.remove(powerUp);
+			}
+			// explosions                //
+			for (int i = 0; i < explosions.size(); i++) {
+				explosion = explosions.get(i);
+				explosion.update();
+				if (!explosion.isVisible())
+					explosions.remove(explosion);
+			}
+			// notifications             //
+			for (int i = 0; i < notifications.size(); i++) {
+				notification = notifications.get(i);
+				notification.update();
+				if (!notification.isVisible())
+					notifications.remove(notification);
+			}
+			// collisions bullet-enemies //
+			for (int i = 0; i < bullets.size(); i++) {
+				bullet = bullets.get(i);
+				bulletX = bullet.getX();
+				bulletY = bullet.getY();
+				bulletRadius = bullet.getRadius();
+				for (int j = 0; j < enemies.size(); j++) {
+					enemy = enemies.get(j);
+					enemyX = enemy.getX();
+					enemyY = enemy.getY();
+					enemyRadius = enemy.getRadius();
+					dX = bulletX - enemyX;
+					dY = bulletY - enemyY;
+					distance = Math.sqrt(dX * dX + dY * dY);
+					if (distance < bulletRadius + enemyRadius) {
+						enemy.hit();
+						bullets.remove(i);
+						i--;
+						break;
+					}
+				}
+			}
+			// check dead enemies        //
+			for (int i = 0; i < enemies.size(); i++) {
+				enemy = enemies.get(i);
+				if (enemy.isDead()) {
+					// chance for powerUp
+					random = Math.random();
+					if (random < 0.001)
+						powerUps.add(new PowerUp(PowerUp.EXTRALIFE, enemy.getX(), enemy.getY()));
+					else if (random < 0.010)
+						powerUps.add(new PowerUp(PowerUp.DOUBLEPOWER, enemy.getX(), enemy.getY()));
+					else if (random < 0.020)
+						powerUps.add(new PowerUp(PowerUp.INVINCIBILITY, enemy.getX(), enemy.getY()));
+					else if (random < 0.050)
+						powerUps.add(new PowerUp(PowerUp.SLOWDOWN, enemy.getX(), enemy.getY()));
+					else if (random < 0.100)
+						powerUps.add(new PowerUp(PowerUp.POWER, enemy.getX(), enemy.getY()));
+					// player score
+					player.addScore(enemy.getType() + enemy.getRank());
+					// enemy explode
+					enemy.explode();
+					explosions.add(new Explosion(enemy.getX(), enemy.getY(), enemy.getRadius(), enemy.getRadius() + 30));
+					// remove dead enemy
+					enemies.remove(enemy);
+					i--;
+				}
+			}
+			// check dead player         //
+			if (player.isDead())
+				gameOver();
+			// collisions player-enemy   //
+			if ((!player.isRecovering()) && (!player.isInvincible())) {
+				playerX = player.getPosX();
+				playerY = player.getPosY();
+				playerRadius = player.getRadius();
+				for (int i = 0; i < enemies.size(); i++) {
+					enemy = enemies.get(i);
+					enemyX = enemy.getX();
+					enemyY = enemy.getY();
+					enemyRadius = enemy.getRadius();
+					dX = playerX - enemyX;
+					dY = playerY - enemyY;
+					distance = Math.sqrt(dX * dX + dY * dY);
+					if (distance < playerRadius + enemyRadius) {
+						player.loseLife();
+					}
+				}
+			}
+			// collision player-powerUp  //
 			playerX = player.getPosX();
 			playerY = player.getPosY();
 			playerRadius = player.getRadius();
-			for (int i = 0; i < enemies.size(); i++) {
-				enemy = enemies.get(i);
-				enemyX = enemy.getX();
-				enemyY = enemy.getY();
-				enemyRadius = enemy.getRadius();
-				dX = playerX - enemyX;
-				dY = playerY - enemyY;
+			for (int i = 0; i < powerUps.size(); i++) {
+				powerUp = powerUps.get(i);
+				powerUpX = powerUp.getPosX();
+				powerUpY = powerUp.getPosY();
+				powerUpLength = powerUp.getLength();
+				dX = playerX - powerUpX;
+				dY = playerY - powerUpY;
 				distance = Math.sqrt(dX * dX + dY * dY);
-				if (distance < playerRadius + enemyRadius) {
-					player.loseLife();
+				// collected powerUp
+				if (distance < playerRadius + powerUpLength) {
+					powerUpType = powerUp.getType();
+					if (powerUpType == PowerUp.EXTRALIFE) {
+						player.gainsLife();
+						notifications.add(new Notification(powerUp.getPosX(), powerUp.getPosY(), 1000, "Vida Extra"));
+						player.addScore(100);
+					}
+					if (powerUpType == PowerUp.POWER) {
+						player.increasePower(1);
+						player.setAttackingVelocity(10);
+						notifications.add(new Notification(powerUp.getPosX(), powerUp.getPosY(), 1000, "Power Up"));
+						player.addScore(10);
+					}
+					if (powerUpType == PowerUp.DOUBLEPOWER) {
+						player.increasePower(2);
+						player.setAttackingVelocity(20);
+						notifications.add(new Notification(powerUp.getPosX(), powerUp.getPosY(), 1000, "Double Power Up"));
+						player.addScore(20);
+					}
+					if (powerUpType == PowerUp.SLOWDOWN) {
+						slowDownDelay = 10000;
+						slowDownTimer = System.nanoTime();
+						for (int j = 0; j < enemies.size(); j++) {
+							enemy = enemies.get(j);
+							enemy.setSlow(true);
+						}
+						notifications.add(new Notification(powerUp.getPosX(), powerUp.getPosY(), 1000, "Slow Down"));
+						player.addScore(5);
+					}
+					if (powerUpType == PowerUp.INVINCIBILITY) {
+						invincibilityDelay = player.getInvincibilityDelay();
+						invincibilityTimer = System.nanoTime();
+						player.setInvincibility(true);
+						notifications.add(new Notification(powerUp.getPosX(), powerUp.getPosY(), 1000, "Invencibilidade"));
+						player.addScore(50);
+					}
+					powerUps.remove(powerUp);
+					i--;
 				}
 			}
-		}
-		// collision player-powerUp  //
-		playerX = player.getPosX();
-		playerY = player.getPosY();
-		playerRadius = player.getRadius();
-		for (int i = 0; i < powerUps.size(); i++) {
-			powerUp = powerUps.get(i);
-			powerUpX = powerUp.getPosX();
-			powerUpY = powerUp.getPosY();
-			powerUpLength = powerUp.getLength();
-			dX = playerX - powerUpX;
-			dY = playerY - powerUpY;
-			distance = Math.sqrt(dX * dX + dY * dY);
-			// collected powerUp
-			if (distance < playerRadius + powerUpLength) {
-				powerUpType = powerUp.getType();
-				if (powerUpType == PowerUp.EXTRALIFE) {
-					player.gainsLife();
-					notifications.add(new Notification(powerUp.getPosX(), powerUp.getPosY(), 1000, "Vida Extra"));
-					player.addScore(100);
-				}
-				if (powerUpType == PowerUp.POWER) {
-					player.increasePower(1);
-					player.setAttackingVelocity(10);
-					notifications.add(new Notification(powerUp.getPosX(), powerUp.getPosY(), 1000, "Power Up"));
-					player.addScore(10);
-				}
-				if (powerUpType == PowerUp.DOUBLEPOWER) {
-					player.increasePower(2);
-					player.setAttackingVelocity(20);
-					notifications.add(new Notification(powerUp.getPosX(), powerUp.getPosY(), 1000, "Double Power Up"));
-					player.addScore(20);
-				}
-				if (powerUpType == PowerUp.SLOWDOWN) {
-					slowDownDelay = 10000;
-					slowDownTimer = System.nanoTime();
+			// slowDown                  //
+			if (slowDownTimer != 0) {
+				slowDownTimerDiff = (System.nanoTime() - slowDownTimer) / 1000000;
+				if (slowDownTimerDiff > slowDownDelay) {
+					slowDownTimer = 0;
 					for (int j = 0; j < enemies.size(); j++) {
 						enemy = enemies.get(j);
-						enemy.setSlow(true);
+						enemy.setSlow(false);
 					}
-					notifications.add(new Notification(powerUp.getPosX(), powerUp.getPosY(), 1000, "Slow Down"));
-					player.addScore(5);
-				}
-				if (powerUpType == PowerUp.INVINCIBILITY) {
-					invincibilityDelay = player.getInvincibilityDelay();
-					invincibilityTimer = System.nanoTime();
-					player.setInvincibility(true);
-					notifications.add(new Notification(powerUp.getPosX(), powerUp.getPosY(), 1000, "Invencibilidade"));
-					player.addScore(50);
-				}
-				powerUps.remove(powerUp);
-				i--;
-			}
-		}
-		// slowDown                  //
-		if (slowDownTimer != 0) {
-			slowDownTimerDiff = (System.nanoTime() - slowDownTimer) / 1000000;
-			if (slowDownTimerDiff > slowDownDelay) {
-				slowDownTimer = 0;
-				for (int j = 0; j < enemies.size(); j++) {
-					enemy = enemies.get(j);
-					enemy.setSlow(false);
 				}
 			}
-		}
-		// invincibility             //
-		if (invincibilityTimer != 0) {
-			invincibilityTimerDiff = (System.nanoTime() - invincibilityTimer) / 1000000;
-			if (invincibilityTimerDiff > invincibilityDelay) {
-				invincibilityTimer = 0;
-				player.setInvincibility(false);
+			// invincibility             //
+			if (invincibilityTimer != 0) {
+				invincibilityTimerDiff = (System.nanoTime() - invincibilityTimer) / 1000000;
+				if (invincibilityTimerDiff > invincibilityDelay) {
+					invincibilityTimer = 0;
+					player.setInvincibility(false);
+				}
 			}
-		}
-		// collisions playerInvincibility-enemies   //
-		if (player.isInvincible()) {
-			playerX = player.getPosX();
-			playerY = player.getPosY();
-			playerRadius = player.getRadius() * 3;
-			for (int i = 0; i < enemies.size(); i++) {
-				enemy = enemies.get(i);
-				enemyX = enemy.getX();
-				enemyY = enemy.getY();
-				enemyRadius = enemy.getRadius();
-				dX = playerX - enemyX;
-				dY = playerY - enemyY;
-				distance = Math.sqrt(dX * dX + dY * dY);
-				if (distance < playerRadius + enemyRadius) {
-					enemy.rebounds();
+			// collisions playerInvincibility-enemies   //
+			if (player.isInvincible()) {
+				playerX = player.getPosX();
+				playerY = player.getPosY();
+				playerRadius = player.getRadius() * 3;
+				for (int i = 0; i < enemies.size(); i++) {
+					enemy = enemies.get(i);
+					enemyX = enemy.getX();
+					enemyY = enemy.getY();
+					enemyRadius = enemy.getRadius();
+					dX = playerX - enemyX;
+					dY = playerY - enemyY;
+					distance = Math.sqrt(dX * dX + dY * dY);
+					if (distance < playerRadius + enemyRadius) {
+						enemy.rebounds();
+					}
 				}
 			}
 		}
-
 	}
 
 	@Override
@@ -500,11 +512,12 @@ public class PlayState extends States {
 		powerUps.clear();
 	}
 
-	private void congratulations() {      //State FinishState
+	private void congratulations() {      // FinishState
+		clearScenery();
 		DrawablePanel.setRunning(false);
 	}
 
-	private void gameOver() {             //State GameOverState
+	private void gameOver() {             // GameOverState
 		DrawablePanel.setRunning(false);
 	}
 

@@ -1,59 +1,78 @@
 package br.studio.calbertofilho.game.managements;
 
 import java.awt.Graphics2D;
-import java.util.ArrayList;
 
 import br.studio.calbertofilho.game.controllers.handlers.Keyboard;
 import br.studio.calbertofilho.game.controllers.handlers.Mouse;
+import br.studio.calbertofilho.game.managements.states.FinishState;
+import br.studio.calbertofilho.game.managements.states.GameOverState;
+import br.studio.calbertofilho.game.managements.states.MenuState;
+import br.studio.calbertofilho.game.managements.states.PauseState;
 import br.studio.calbertofilho.game.managements.states.PlayState;
 import br.studio.calbertofilho.game.managements.states.States;
 
 public class StatesManager {
 
-	private ArrayList<States> states;
-	private static final int PLAY = 0;
-//	private static final int MENU = 1;
-//	private static final int PAUSE = 2;
-//	private static final int GAME_OVER = 3;
+	private States states[];
+	public static final int MENU = 0;
+	public static final int PLAY = 1;
+	public static final int PAUSE = 2;
+	public static final int GAME_OVER = 3;
+	public static final int FINISH = 4;
 
 	public StatesManager() {
-		states = new ArrayList<States>();
-		add(PLAY);
+		states = new States[5];
+		states[PLAY] = new PlayState(this);
 	}
 
-	public void pop(int state) {
-		states.remove(state);
+	public boolean getState(int state) {
+		return states[state] != null;
 	}
 
 	public void add(int state) {
+		if (states[state] != null)
+			return;
+		if (state == MENU)
+			states[MENU] = new MenuState(this);
 		if (state == PLAY)
-			states.add(new PlayState(this));
-//		if (state == MENU)
-//			states.add(new MenuState(this));
-//		if (state == PAUSE)
-//			states.add(new PauseState(this));
-//		if (state == GAME_OVER)
-//			states.add(new GameOverState(this));
+			states[PLAY] = new PlayState(this);
+		if (state == PAUSE)
+			states[PAUSE] = new PauseState(this);
+		if (state == GAME_OVER)
+			states[GAME_OVER] = new GameOverState(this);
+		if (state == FINISH)
+			states[FINISH] = new FinishState(this);
+	}
+
+	public void pop(int state) {
+		states[state] = null;
 	}
 
 	public void addAndPop(int state) {
-		states.remove(0);
+		addAndPop(state, 0);
+	}
+
+	private void addAndPop(int state, int remove) {
+		pop(remove);
 		add(state);
 	}
 
 	public void input(Mouse mouse, Keyboard keyboard) {
 		for (States state : states)
-			state.input(mouse, keyboard);
+			if (state != null)
+				state.input(mouse, keyboard);
 	}
 
 	public void update() {
 		for (States state : states)
-			state.update();
+			if (state != null)
+				state.update();
 	}
 
 	public void render(Graphics2D graphics) {
 		for (States state : states)
-			state.render(graphics);
+			if (state != null)
+				state.render(graphics);
 	}
 
 }

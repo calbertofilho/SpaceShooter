@@ -104,8 +104,8 @@ public class Enemy {
 
 	public void update() {
 		if (slow) {
-			posX += dX + reboundSpeed * Math.signum(dX) * 0.3;
-			posY += dY + reboundSpeed * Math.signum(dY) * 0.3;
+			posX += (dX + reboundSpeed * Math.signum(dX)) * 0.3;
+			posY += (dY + reboundSpeed * Math.signum(dY)) * 0.3;
 		} else {
 			posX += dX + reboundSpeed * Math.signum(dX);
 			posY += dY + reboundSpeed * Math.signum(dY);
