@@ -25,68 +25,68 @@ public class Enemy {
 		deacc = 0.2f;
 		// default enemy
 		if (type == 1) {
-			if (rank == 1) {
+			if (rank == 1) { // only one
 				normalColor = new Color(34, 207, 190);
 				hitColor = new Color(20, 149, 76);
 				speed = 2;
 			}
-			if (rank == 2) {
+			if (rank == 2) { // spawn 2 new enemies on explode
 				normalColor = new Color(28, 169, 155);
 				hitColor = new Color(15, 111, 57);
 				speed = 2;
 			}
-			if (rank == 3) {
+			if (rank == 3) { // 3 new
 				normalColor = new Color(19, 117, 108);
 				hitColor = new Color(8, 60, 30);
 				speed = 1.5;
 			}
-			if (rank == 4) {
+			if (rank == 4) { // 4 new
 				normalColor = new Color(15, 92, 84);
 				hitColor = new Color(7, 34, 17);
 				speed = 1.5;
 			}
 		}
-		// stronger, faster default
+		// stronger, faster
 		if (type == 2) {
-			if (rank == 1) {
+			if (rank == 1) { // only one
 				normalColor = new Color(255, 165, 52);
 				hitColor = new Color(226, 91, 42);
 				speed = 3;
 			}
-			if (rank == 2) {
+			if (rank == 2) { // spawn 4 new enemies on explode
 				normalColor = new Color(245, 146, 50);
 				hitColor = new Color(188, 76, 35);
 				speed = 3;
 			}
-			if (rank == 3) {
+			if (rank == 3) { // 6 new
 				normalColor = new Color(194, 115, 39);
 				hitColor = new Color(137, 55, 25);
 				speed = 2.5;
 			}
-			if (rank == 4) {
+			if (rank == 4) { // 8 new
 				normalColor = new Color(168, 100, 34);
 				hitColor = new Color(111, 45, 20);
 				speed = 2.5;
 			}
 		}
-		// slower, but hard to kill
+		// slower, harder
 		if (type == 3) {
-			if (rank == 1) {
+			if (rank == 1) { // only one
 				normalColor = new Color(183, 45, 179); 
 				hitColor = new Color(89, 38, 130);
 				speed = 1.5;
 			}
-			if (rank == 2) {
+			if (rank == 2) { // spawn 6 new enemies on explode
 				normalColor = new Color(145, 36, 142); 
 				hitColor = new Color(63, 27, 92);
 				speed = 1.5;
 			}
-			if (rank == 3) {
+			if (rank == 3) { // 9 new
 				normalColor = new Color(93, 23, 92);
 				hitColor = new Color(28, 12, 40);
 				speed = 1;
 			}
-			if (rank == 4) {
+			if (rank == 4) { // 12 new
 				normalColor = new Color(68, 17, 67); 
 				hitColor = new Color(10, 4, 15);
 				speed = 1;
@@ -168,7 +168,7 @@ public class Enemy {
 	}
 
 	public void explode() {
-		if (rank > 1) {
+		if (getRank() > 1) {
 			amount = getType() * getRank();
 			for (int i = 0; i < amount; i++) {
 				enemy = new Enemy(getType(), getRank() - 1);
@@ -216,7 +216,7 @@ public class Enemy {
 
 	public void rebounds() {
 		reboundTimer = System.nanoTime();
-		reboundSpeed = 10;
+		reboundSpeed = 12;
 		dX = -dX;
 		dY = -dY;
 	}
