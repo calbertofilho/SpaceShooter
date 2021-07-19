@@ -98,7 +98,7 @@ public class PlayState extends States {
 				if (waveStartTimerDiff > waveDelay) {
 					waveStart = true;
 					waveStartTimer = waveStartTimerDiff = 0;
-					if (waveNumber >= 11)
+					if (waveNumber > 10)
 						congratulations();
 				}
 			}
@@ -343,7 +343,7 @@ public class PlayState extends States {
 		alphaFontColor = (alphaFontColor > 255) ? 255 : alphaFontColor;
 		alphaFontColor = (alphaFontColor < 0) ? 0 : alphaFontColor;
 		graphics.setColor(new Color(255, 255, 255, alphaFontColor));
-		text = (waveNumber == 11) ?	"---     P A R A B É N S   ! ! !     ---" :	"---     W A V E   " + waveNumber + "     ---";
+		text = (waveNumber <= 10) ? "---     W A V E   " + waveNumber + "     ---" : "---     P A R A B É N S   ! ! !     ---";
 		textLength = (int) graphics.getFontMetrics().getStringBounds(text, graphics).getWidth();
 		graphics.drawString(text, DrawablePanel.getGameWidth() / 2 - textLength / 2, DrawablePanel.getGameHeight() / 2);
 	// show player lives         //
@@ -412,24 +412,25 @@ public class PlayState extends States {
 			graphics.drawRect(10, positionInvicibilityPowerUp + 5, 100, 10);
 			graphics.setStroke(new BasicStroke(1));
 		}
-//	// show wave number          //
 		graphics.setColor(Color.WHITE);
-//		text = (waveNumber == 11) ?	"PARABÉNS !!!" : "--- WAVE " + waveNumber + " ---";
-//		graphics.drawString(text, (DrawablePanel.getGameWidth() - graphics.getFontMetrics().stringWidth(text)) - 5, graphics.getFontMetrics().getHeight());
+		graphics.setFont(scoreFont.deriveFont(Font.PLAIN, 24));
 	// show player score         //
 		scores = String.valueOf(player.getScore());
-		graphics.setFont(scoreFont.deriveFont(Font.PLAIN, 24));
 		graphics.drawString(scores, (DrawablePanel.getGameWidth() - graphics.getFontMetrics().stringWidth(scores)) - 5, graphics.getFontMetrics().getHeight());
+	// show wave number          //
+		graphics.setFont(textFont.deriveFont(Font.PLAIN, 16));
+		text = (waveNumber <= 10) ? "WAVE " + waveNumber : "";
+		graphics.drawString(text, (DrawablePanel.getGameWidth() - graphics.getFontMetrics().stringWidth(text)) - 5, 2 * graphics.getFontMetrics().getHeight());
 	// show bullets counter      //
-		graphics.setFont(textFont.deriveFont(Font.PLAIN, 14));
-//		text = "Disparos: " + bullets.size();
-//		graphics.drawString(text, (DrawablePanel.getGameWidth() - graphics.getFontMetrics().stringWidth(text)) - 5, 3 * graphics.getFontMetrics().getHeight());
-//	// show enemies counter      //
-//		text = "Inimigos: " + enemies.size();
-//		graphics.drawString(text, (DrawablePanel.getGameWidth() - graphics.getFontMetrics().stringWidth(text)) - 5, 4 * graphics.getFontMetrics().getHeight());
+		text = "Disparos: " + bullets.size();
+		graphics.drawString(text, (DrawablePanel.getGameWidth() - graphics.getFontMetrics().stringWidth(text)) - 5, DrawablePanel.getGameHeight() - graphics.getFontMetrics().getHeight());
+	// show enemies counter      //
+		text = "Inimigos: " + enemies.size();
+		graphics.drawString(text, (DrawablePanel.getGameWidth() - graphics.getFontMetrics().stringWidth(text)) - 5, DrawablePanel.getGameHeight() - 5);
 	// show FPS counter          //
 		graphics.setColor(Color.YELLOW);
-		text = String.format("%.2f fps", DrawablePanel.getGameFPS());
+		graphics.setFont(scoreFont.deriveFont(Font.PLAIN, 14));
+		text = String.format("FPS: %.2f", DrawablePanel.getGameFPS());
 		graphics.drawString(text, 5, DrawablePanel.getGameHeight() - 5);
 	}
 

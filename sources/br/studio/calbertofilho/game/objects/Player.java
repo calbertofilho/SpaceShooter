@@ -94,6 +94,8 @@ public class Player {
 			invincibilityDelay += 4000;
 		if (this.power < 5)
 			this.power += power;
+		if (this.power > 5)
+			this.power = 5;
 		if (powerLevel == 4) {
 			if (power > requiredPower[powerLevel]) {
 				power = requiredPower[powerLevel];
