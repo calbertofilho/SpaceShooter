@@ -515,11 +515,11 @@ public class PlayState extends States {
 
 	private void congratulations() {      // FinishState
 		clearScenery();
-		DrawableFramePanel.setRunning(false);
+		DrawableFramePanel.setGameRunning(false);
 	}
 
 	private void gameOver() {             // GameOverState
-		DrawableFramePanel.setRunning(false);
+		DrawableFramePanel.setGameRunning(false);
 	}
 
 	public static Player getPlayer() {

@@ -20,7 +20,7 @@ public class DrawableFramePanel extends JPanel implements Runnable {
 	private Keyboard keyboard;
 	private Mouse mouse;
 	private BufferedImage image;
-	private Graphics graphs;
+	private Graphics drawer;
 	private Graphics2D graphics;
 	private final int TARGET_FPS = 60;
 	private static double averageFPS;
@@ -54,7 +54,7 @@ public class DrawableFramePanel extends JPanel implements Runnable {
 			startTime = System.nanoTime();
 	/////////////////////////
 			updateGame();
-			inputControls();
+			inputGameControls();
 			renderGame();
 			drawGame();
 	/////////////////////////
@@ -93,7 +93,7 @@ public class DrawableFramePanel extends JPanel implements Runnable {
 	}
 
 ////////////////////////////////////////////////////////////////////////////////
-	private void inputControls() {
+	private void inputGameControls() {
 		gameManager.input(mouse, keyboard);
 	}
 
@@ -106,9 +106,9 @@ public class DrawableFramePanel extends JPanel implements Runnable {
 	}
 
 	private void drawGame() {
-		graphs = this.getGraphics();
-		graphs.drawImage(image, 0, 0, null);
-		graphs.dispose();
+		drawer = this.getGraphics();
+		drawer.drawImage(image, 0, 0, null);
+		drawer.dispose();
 	}
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -124,8 +124,12 @@ public class DrawableFramePanel extends JPanel implements Runnable {
 		return (int) gameDimensions.getHeight();
 	}
 
-	public static void setRunning(boolean running) {
+	public static void setGameRunning(boolean running) {
 		DrawableFramePanel.running = running;
+	}
+
+	public static boolean getGameRunning() {
+		return running;
 	}
 
 }
