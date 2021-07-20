@@ -4,7 +4,7 @@ import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
 
-import br.studio.calbertofilho.game.controllers.containers.DrawablePanel;
+import br.studio.calbertofilho.game.controllers.containers.DrawableFramePanel;
 
 public class PowerUp {
 
@@ -51,7 +51,7 @@ public class PowerUp {
 	}
 
 	public boolean isVisible() {
-		if (posY > DrawablePanel.getGameHeight() + length)
+		if (posY > DrawableFramePanel.getGameHeight() + length)
 			return false;
 		return true;
 	}

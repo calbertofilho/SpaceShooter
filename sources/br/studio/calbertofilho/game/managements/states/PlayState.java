@@ -9,7 +9,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import br.studio.calbertofilho.game.controllers.containers.DrawablePanel;
+import br.studio.calbertofilho.game.controllers.containers.DrawableFramePanel;
 import br.studio.calbertofilho.game.controllers.handlers.Keyboard;
 import br.studio.calbertofilho.game.controllers.handlers.Mouse;
 import br.studio.calbertofilho.game.managements.StatesManager;
@@ -308,7 +308,7 @@ public class PlayState extends States {
 			graphics.setColor(new Color(79, 155, 217));
 		else
 			graphics.setColor(new Color(55, 108, 151));
-		graphics.fillRect(0, 0, DrawablePanel.getGameWidth(), DrawablePanel.getGameHeight());
+		graphics.fillRect(0, 0, DrawableFramePanel.getGameWidth(), DrawableFramePanel.getGameHeight());
 	// draw player               //
 		player.render(graphics);
 	// draw bullets              //
@@ -345,7 +345,7 @@ public class PlayState extends States {
 		graphics.setColor(new Color(255, 255, 255, alphaFontColor));
 		text = (waveNumber <= 10) ? "---     W A V E   " + waveNumber + "     ---" : "---     P A R A B É N S   ! ! !     ---";
 		textLength = (int) graphics.getFontMetrics().getStringBounds(text, graphics).getWidth();
-		graphics.drawString(text, DrawablePanel.getGameWidth() / 2 - textLength / 2, DrawablePanel.getGameHeight() / 2);
+		graphics.drawString(text, DrawableFramePanel.getGameWidth() / 2 - textLength / 2, DrawableFramePanel.getGameHeight() / 2);
 	// show player lives         //
 		graphics.setColor(Color.GREEN.darker());
 		graphics.fillRect(10, 24, 15 * player.getLives(), 18);
@@ -416,22 +416,22 @@ public class PlayState extends States {
 		graphics.setFont(scoreFont.deriveFont(Font.PLAIN, 24));
 	// show player score         //
 		scores = String.valueOf(player.getScore());
-		graphics.drawString(scores, (DrawablePanel.getGameWidth() - graphics.getFontMetrics().stringWidth(scores)) - 5, graphics.getFontMetrics().getHeight());
+		graphics.drawString(scores, (DrawableFramePanel.getGameWidth() - graphics.getFontMetrics().stringWidth(scores)) - 5, graphics.getFontMetrics().getHeight());
 	// show wave number          //
 		graphics.setFont(textFont.deriveFont(Font.PLAIN, 16));
 		text = (waveNumber <= 10) ? "WAVE " + waveNumber : "";
-		graphics.drawString(text, (DrawablePanel.getGameWidth() - graphics.getFontMetrics().stringWidth(text)) - 5, 2 * graphics.getFontMetrics().getHeight());
+		graphics.drawString(text, (DrawableFramePanel.getGameWidth() - graphics.getFontMetrics().stringWidth(text)) - 5, 2 * graphics.getFontMetrics().getHeight());
 	// show bullets counter      //
 		text = "Disparos: " + bullets.size();
-		graphics.drawString(text, (DrawablePanel.getGameWidth() - graphics.getFontMetrics().stringWidth(text)) - 5, DrawablePanel.getGameHeight() - graphics.getFontMetrics().getHeight());
+		graphics.drawString(text, (DrawableFramePanel.getGameWidth() - graphics.getFontMetrics().stringWidth(text)) - 5, DrawableFramePanel.getGameHeight() - graphics.getFontMetrics().getHeight());
 	// show enemies counter      //
 		text = "Inimigos: " + enemies.size();
-		graphics.drawString(text, (DrawablePanel.getGameWidth() - graphics.getFontMetrics().stringWidth(text)) - 5, DrawablePanel.getGameHeight() - 5);
+		graphics.drawString(text, (DrawableFramePanel.getGameWidth() - graphics.getFontMetrics().stringWidth(text)) - 5, DrawableFramePanel.getGameHeight() - 5);
 	// show FPS counter          //
 		graphics.setColor(Color.YELLOW);
 		graphics.setFont(scoreFont.deriveFont(Font.PLAIN, 14));
-		text = String.format("FPS: %.2f", DrawablePanel.getGameFPS());
-		graphics.drawString(text, 5, DrawablePanel.getGameHeight() - 5);
+		text = String.format("FPS: %.2f", DrawableFramePanel.getGameFPS());
+		graphics.drawString(text, 5, DrawableFramePanel.getGameHeight() - 5);
 	}
 
 	private void createNewEnemies() {
@@ -515,11 +515,11 @@ public class PlayState extends States {
 
 	private void congratulations() {      // FinishState
 		clearScenery();
-		DrawablePanel.setRunning(false);
+		DrawableFramePanel.setRunning(false);
 	}
 
 	private void gameOver() {             // GameOverState
-		DrawablePanel.setRunning(false);
+		DrawableFramePanel.setRunning(false);
 	}
 
 	public static Player getPlayer() {

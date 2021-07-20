@@ -7,7 +7,7 @@ import java.awt.Graphics2D;
 import java.io.File;
 import java.io.IOException;
 
-import br.studio.calbertofilho.game.controllers.containers.DrawablePanel;
+import br.studio.calbertofilho.game.controllers.containers.DrawableFramePanel;
 import br.studio.calbertofilho.game.controllers.handlers.Keyboard;
 import br.studio.calbertofilho.game.controllers.handlers.Mouse;
 import br.studio.calbertofilho.game.managements.StatesManager;
@@ -44,12 +44,12 @@ public class PauseState extends States {
 	@Override
 	public void render(Graphics2D graphics) {
 		graphics.setColor(new Color(55, 108, 151));
-		graphics.fillRect(0, 0, DrawablePanel.getGameWidth(), DrawablePanel.getGameHeight());
+		graphics.fillRect(0, 0, DrawableFramePanel.getGameWidth(), DrawableFramePanel.getGameHeight());
 		graphics.setFont(textFont.deriveFont(Font.BOLD, 24));
 		graphics.setColor(Color.WHITE);
 		text = "---     J O G O   S U S P E N S O     ---";
 		textLength = (int) graphics.getFontMetrics().getStringBounds(text, graphics).getWidth();
-		graphics.drawString(text, DrawablePanel.getGameWidth() / 2 - textLength / 2, DrawablePanel.getGameHeight() / 2);
+		graphics.drawString(text, DrawableFramePanel.getGameWidth() / 2 - textLength / 2, DrawableFramePanel.getGameHeight() / 2);
 	}
 
 }

@@ -4,7 +4,7 @@ import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
 
-import br.studio.calbertofilho.game.controllers.containers.DrawablePanel;
+import br.studio.calbertofilho.game.controllers.containers.DrawableFramePanel;
 import br.studio.calbertofilho.game.controllers.handlers.Keyboard;
 import br.studio.calbertofilho.game.controllers.handlers.Mouse;
 import br.studio.calbertofilho.game.managements.states.PlayState;
@@ -23,8 +23,8 @@ public class Player {
 	public Player() {
 		x = new int[3];
 		y = new int[3];
-		posX = DrawablePanel.getGameWidth() / 2;
-		posY = DrawablePanel.getGameHeight() - 100;
+		posX = DrawableFramePanel.getGameWidth() / 2;
+		posY = DrawableFramePanel.getGameHeight() - 100;
 		radius = 10;
 		dX = 0;
 		dY = 0;
@@ -158,10 +158,10 @@ public class Player {
 			posX = radius;
 		if (posY < radius)
 			posY = radius;
-		if (posX > DrawablePanel.getGameWidth() - radius)
-			posX = DrawablePanel.getGameWidth() - radius;
-		if (posY > DrawablePanel.getGameHeight() - radius)
-			posY = DrawablePanel.getGameHeight() - radius;
+		if (posX > DrawableFramePanel.getGameWidth() - radius)
+			posX = DrawableFramePanel.getGameWidth() - radius;
+		if (posY > DrawableFramePanel.getGameHeight() - radius)
+			posY = DrawableFramePanel.getGameHeight() - radius;
 	// reseting variables   //
 		dX = 0;
 		dY = 0;

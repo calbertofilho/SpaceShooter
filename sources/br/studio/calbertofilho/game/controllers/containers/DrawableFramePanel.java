@@ -12,7 +12,7 @@ import br.studio.calbertofilho.game.controllers.handlers.Mouse;
 import br.studio.calbertofilho.game.managements.StatesManager;
 
 @SuppressWarnings("serial")
-public class DrawablePanel extends JPanel implements Runnable {
+public class DrawableFramePanel extends JPanel implements Runnable {
 
 	private static Dimension gameDimensions;
 	private Thread thread;
@@ -28,7 +28,7 @@ public class DrawablePanel extends JPanel implements Runnable {
 	private int frameCount, maxFrameCount;
 	private StatesManager gameManager;
 
-	public DrawablePanel(int width, int height) {
+	public DrawableFramePanel(int width, int height) {
 		super();
 		gameDimensions = new Dimension(width, height);
 		setPreferredSize(gameDimensions);
@@ -125,7 +125,7 @@ public class DrawablePanel extends JPanel implements Runnable {
 	}
 
 	public static void setRunning(boolean running) {
-		DrawablePanel.running = running;
+		DrawableFramePanel.running = running;
 	}
 
 }

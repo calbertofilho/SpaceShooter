@@ -4,7 +4,7 @@ import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
 
-import br.studio.calbertofilho.game.controllers.containers.DrawablePanel;
+import br.studio.calbertofilho.game.controllers.containers.DrawableFramePanel;
 import br.studio.calbertofilho.game.managements.states.PlayState;
 
 public class Enemy {
@@ -92,7 +92,7 @@ public class Enemy {
 				speed = 1;
 			}
 		}
-		posX = Math.random() * DrawablePanel.getGameWidth() / 2 + DrawablePanel.getGameHeight() / 4;
+		posX = Math.random() * DrawableFramePanel.getGameWidth() / 2 + DrawableFramePanel.getGameHeight() / 4;
 		posY = -radius;
 		angle = Math.random() * 140 + 20;
 		radians = Math.toRadians(angle);
@@ -117,16 +117,16 @@ public class Enemy {
 				reboundSpeed = 0;
 		}
 		if (!ready) {
-			if ((posX > radius) && (posY > radius) && (posX < DrawablePanel.getGameWidth() - radius) && (posY < DrawablePanel.getGameHeight() - radius))
+			if ((posX > radius) && (posY > radius) && (posX < DrawableFramePanel.getGameWidth() - radius) && (posY < DrawableFramePanel.getGameHeight() - radius))
 				ready = true;
 		}
 		if ((posX < radius) && (dX < 0))
 			dX = -dX;
 		if ((posY < radius) && (dY < 0))
 			dY = -dY;
-		if ((posX > DrawablePanel.getGameWidth() - radius) && (dX > 0))
+		if ((posX > DrawableFramePanel.getGameWidth() - radius) && (dX > 0))
 			dX = -dX;
-		if ((posY > DrawablePanel.getGameHeight() - radius) && (dY > 0))
+		if ((posY > DrawableFramePanel.getGameHeight() - radius) && (dY > 0))
 			dY = -dY;
 		if (hit) {
 			elapsedTime = (System.nanoTime() - hitTimer) / 1000000;
