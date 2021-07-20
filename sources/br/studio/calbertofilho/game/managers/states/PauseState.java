@@ -20,10 +20,10 @@ public class PauseState extends States {
 
 	public PauseState(StatesManager manager) {
 		super(manager);
-		loadResources();
 	}
 
-	private void loadResources() {
+	@Override
+	public void init() {
 		try {
 			textFont = Font.createFont(Font.TRUETYPE_FONT, new File("resources\\assets\\fonts\\Audiowide-Regular.ttf"));
 		} catch (FontFormatException | IOException e) {

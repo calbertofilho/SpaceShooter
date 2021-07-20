@@ -12,8 +12,10 @@ public abstract class States {
 
 	public States(StatesManager manager) {
 		this.manager = manager;
+		init();
 	}
 
+	public abstract void init();
 	public abstract void input(Mouse mouse, Keyboard keyboard);
 	public abstract void update();
 	public abstract void render(Graphics2D graphics);

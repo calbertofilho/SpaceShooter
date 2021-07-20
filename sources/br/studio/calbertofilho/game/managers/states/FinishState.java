@@ -13,6 +13,9 @@ public class FinishState extends States {
 	}
 
 	@Override
+	public void init() {}
+
+	@Override
 	public void input(Mouse mouse, Keyboard keyboard) {}
 
 	@Override

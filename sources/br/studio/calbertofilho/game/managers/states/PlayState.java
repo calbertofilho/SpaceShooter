@@ -57,10 +57,10 @@ public class PlayState extends States {
 		pause = false;
 		waveStartTimer = waveStartTimerDiff = waveNumber = 0;
 		waveDelay = 2000;
-		loadResources();
 	}
 
-	private void loadResources() {
+	@Override
+	public void init() {
 		try {
 			textFont = Font.createFont(Font.TRUETYPE_FONT, new File("resources\\assets\\fonts\\Audiowide-Regular.ttf"));
 			scoreFont = Font.createFont(Font.TRUETYPE_FONT, new File("resources\\assets\\fonts\\04B_19__.TTF"));
