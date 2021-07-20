@@ -9,7 +9,7 @@ import javax.swing.JPanel;
 
 import br.studio.calbertofilho.game.controllers.handlers.Keyboard;
 import br.studio.calbertofilho.game.controllers.handlers.Mouse;
-import br.studio.calbertofilho.game.managements.StatesManager;
+import br.studio.calbertofilho.game.managers.StatesManager;
 
 @SuppressWarnings("serial")
 public class DrawableFramePanel extends JPanel implements Runnable {

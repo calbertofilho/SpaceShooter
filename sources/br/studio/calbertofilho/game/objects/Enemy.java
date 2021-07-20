@@ -5,7 +5,7 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 
 import br.studio.calbertofilho.game.controllers.containers.DrawableFramePanel;
-import br.studio.calbertofilho.game.managements.states.PlayState;
+import br.studio.calbertofilho.game.managers.states.PlayState;
 
 public class Enemy {
 

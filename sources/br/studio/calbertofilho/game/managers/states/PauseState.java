@@ -1,4 +1,4 @@
-package br.studio.calbertofilho.game.managements.states;
+package br.studio.calbertofilho.game.managers.states;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -10,7 +10,7 @@ import java.io.IOException;
 import br.studio.calbertofilho.game.controllers.containers.DrawableFramePanel;
 import br.studio.calbertofilho.game.controllers.handlers.Keyboard;
 import br.studio.calbertofilho.game.controllers.handlers.Mouse;
-import br.studio.calbertofilho.game.managements.StatesManager;
+import br.studio.calbertofilho.game.managers.StatesManager;
 
 public class PauseState extends States {
 

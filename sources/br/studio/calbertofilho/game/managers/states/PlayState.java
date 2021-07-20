@@ -1,4 +1,4 @@
-package br.studio.calbertofilho.game.managements.states;
+package br.studio.calbertofilho.game.managers.states;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import br.studio.calbertofilho.game.controllers.containers.DrawableFramePanel;
 import br.studio.calbertofilho.game.controllers.handlers.Keyboard;
 import br.studio.calbertofilho.game.controllers.handlers.Mouse;
-import br.studio.calbertofilho.game.managements.StatesManager;
+import br.studio.calbertofilho.game.managers.StatesManager;
 import br.studio.calbertofilho.game.objects.Bullet;
 import br.studio.calbertofilho.game.objects.Enemy;
 import br.studio.calbertofilho.game.objects.Explosion;

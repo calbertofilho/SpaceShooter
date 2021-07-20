@@ -1,10 +1,10 @@
-package br.studio.calbertofilho.game.managements.states;
+package br.studio.calbertofilho.game.managers.states;
 
 import java.awt.Graphics2D;
 
 import br.studio.calbertofilho.game.controllers.handlers.Keyboard;
 import br.studio.calbertofilho.game.controllers.handlers.Mouse;
-import br.studio.calbertofilho.game.managements.StatesManager;
+import br.studio.calbertofilho.game.managers.StatesManager;
 
 public class FinishState extends States {
 

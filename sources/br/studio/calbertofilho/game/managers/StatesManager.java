@@ -1,15 +1,15 @@
-package br.studio.calbertofilho.game.managements;
+package br.studio.calbertofilho.game.managers;
 
 import java.awt.Graphics2D;
 
 import br.studio.calbertofilho.game.controllers.handlers.Keyboard;
 import br.studio.calbertofilho.game.controllers.handlers.Mouse;
-import br.studio.calbertofilho.game.managements.states.FinishState;
-import br.studio.calbertofilho.game.managements.states.GameOverState;
-import br.studio.calbertofilho.game.managements.states.MenuState;
-import br.studio.calbertofilho.game.managements.states.PauseState;
-import br.studio.calbertofilho.game.managements.states.PlayState;
-import br.studio.calbertofilho.game.managements.states.States;
+import br.studio.calbertofilho.game.managers.states.FinishState;
+import br.studio.calbertofilho.game.managers.states.GameOverState;
+import br.studio.calbertofilho.game.managers.states.MenuState;
+import br.studio.calbertofilho.game.managers.states.PauseState;
+import br.studio.calbertofilho.game.managers.states.PlayState;
+import br.studio.calbertofilho.game.managers.states.States;
 
 public class StatesManager {
 
