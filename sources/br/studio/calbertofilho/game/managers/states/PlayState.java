@@ -18,6 +18,7 @@ import br.studio.calbertofilho.game.objects.Enemy;
 import br.studio.calbertofilho.game.objects.Explosion;
 import br.studio.calbertofilho.game.objects.Player;
 import br.studio.calbertofilho.game.objects.PowerUp;
+import br.studio.calbertofilho.game.sounds.MidiPlayer;
 import br.studio.calbertofilho.game.texts.Notification;
 
 public class PlayState extends States {
@@ -44,6 +45,7 @@ public class PlayState extends States {
 	private int waveNumber, waveDelay, textLength, alphaFontColor, slowDownDelay, invincibilityDelay;
 	private Font textFont, scoreFont;
 	private String text, scores;
+	private MidiPlayer bgmSound;
 
 	public PlayState(StatesManager manager) {
 		super(manager);
@@ -64,6 +66,9 @@ public class PlayState extends States {
 		try {
 			textFont = Font.createFont(Font.TRUETYPE_FONT, new File("resources\\assets\\fonts\\Audiowide-Regular.ttf"));
 			scoreFont = Font.createFont(Font.TRUETYPE_FONT, new File("resources\\assets\\fonts\\04B_19__.TTF"));
+			bgmSound = new MidiPlayer("resources\\assets\\sounds\\bgm.mid");
+			bgmSound.setVolume(0.7);
+			bgmSound.playContinuousLoopMusic();
 		} catch (FontFormatException | IOException e) {
 			e.printStackTrace();
 		}
@@ -79,6 +84,7 @@ public class PlayState extends States {
 				pause = false;
 			} else {
 				manager.add(StatesManager.PAUSE);
+				bgmSound.pauseMusic();
 				pause = true;
 			}
 		}
@@ -87,6 +93,8 @@ public class PlayState extends States {
 	@Override
 	public void update() {
 		if (!pause) {
+			if (!bgmSound.isPlaying())
+				bgmSound.resumeMusic();
 			// new wave                  //
 			if ((waveStartTimer == 0) && (enemies.size() == 0)) {
 				waveNumber++;
