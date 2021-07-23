@@ -523,10 +523,12 @@ public class PlayState extends States {
 
 	private void congratulations() {      // FinishState
 		clearScenery();
+		bgmSound.stopMusic();
 		DrawableFramePanel.setGameRunning(false);
 	}
 
 	private void gameOver() {             // GameOverState
+		bgmSound.stopMusic();
 		DrawableFramePanel.setGameRunning(false);
 	}
 
