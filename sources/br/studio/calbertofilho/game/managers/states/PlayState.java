@@ -68,7 +68,7 @@ public class PlayState extends States {
 			scoreFont = Font.createFont(Font.TRUETYPE_FONT, new File("resources\\assets\\fonts\\04B_19__.TTF"));
 			bgmSound = new MidiPlayer("resources\\assets\\sounds\\bgm.mid");
 			bgmSound.setVolume(0.7);
-			bgmSound.playContinuousLoopMusic();
+			bgmSound.playMusicContinuously();
 		} catch (FontFormatException | IOException e) {
 			e.printStackTrace();
 		}
