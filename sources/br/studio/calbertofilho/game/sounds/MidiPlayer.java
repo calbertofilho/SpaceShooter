@@ -10,6 +10,7 @@ import javax.sound.midi.MidiUnavailableException;
 import javax.sound.midi.Receiver;
 import javax.sound.midi.Sequence;
 import javax.sound.midi.Sequencer;
+import javax.sound.midi.ShortMessage;
 import javax.sound.midi.Synthesizer;
 
 public class MidiPlayer {
@@ -18,12 +19,13 @@ public class MidiPlayer {
 	private Synthesizer synthesizer;
 	private MidiChannel[] channels;
 	private Receiver receiver;
+	private ShortMessage volumeMessage;
 	private Sequence bgm;
-	private boolean playing;
+	private boolean playing, receivers;
 	private float streamLength;
 
 	public MidiPlayer() {
-		playing = false;
+		receivers = playing = false;
 		player = null;
 		synthesizer = null;
 		receiver = null;
@@ -44,9 +46,12 @@ public class MidiPlayer {
 			channels = synthesizer.getChannels();
 			if (synthesizer.getDefaultSoundbank() == null)
 				receiver = MidiSystem.getReceiver();
-			else
+			else {
+				receivers = true;
 				receiver = synthesizer.getReceiver();
+			}
 			player.getTransmitter().setReceiver(receiver);
+			volumeMessage = new ShortMessage();
 		} catch (MidiUnavailableException e) {
 			e.printStackTrace();
 		}
@@ -61,16 +66,20 @@ public class MidiPlayer {
 		}
 	}
 
-	public void playContinuousLoopMusic() {
-		playMusic(Sequencer.LOOP_CONTINUOUSLY);
-	}
-
 	public void playMusic(int loops) {
 		if (isReady()) {
 			player.setLoopCount(loops);
 			player.start();
 			playing = true;
 		}
+	}
+
+	public void playMusicOnce() {
+		playMusic(0);
+	}
+
+	public void playMusicContinuously() {
+		playMusic(Sequencer.LOOP_CONTINUOUSLY);
 	}
 
 	public void pauseMusic() {
@@ -105,8 +114,19 @@ public class MidiPlayer {
 	}
 
 	public void setVolume(double volume) {
-		for (MidiChannel channel : channels) {
-			channel.controlChange(7, (int) (volume * 127.0));
+		try {
+			for (int i = 0; i < channels.length; i++) {
+				channels[i].controlChange(7, (int) (volume * 127.0));
+				volumeMessage.setMessage(ShortMessage.CONTROL_CHANGE, i, 7, (int) (volume * 127.0));
+				receiver.send(volumeMessage, -1);
+				if (receivers) {
+					for (Receiver rcv : synthesizer.getReceivers()) {
+						rcv.send(volumeMessage, -1);
+					}
+				}
+			}
+		} catch (InvalidMidiDataException e) {
+			e.printStackTrace();
 		}
 	}
 
