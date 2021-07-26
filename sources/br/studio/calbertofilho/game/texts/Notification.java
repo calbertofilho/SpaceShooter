@@ -26,7 +26,7 @@ public class Notification {
 
 	private void loadResources() {
 		try {
-			font = Font.createFont(Font.TRUETYPE_FONT, new File("resources\\assets\\fonts\\Aero.ttf"));
+			font = Font.createFont(Font.TRUETYPE_FONT, new File("resources/assets/fonts/Aero.ttf"));
 		} catch (FontFormatException | IOException e) {
 			e.printStackTrace();
 		}
