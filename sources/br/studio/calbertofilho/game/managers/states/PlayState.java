@@ -288,7 +288,7 @@ public class PlayState extends States {
 					player.setInvincibility(false);
 				}
 			}
-			// collisions playerInvincibility-enemies   //
+			// collisions invincible player-enemies   //
 			if (player.isInvincible()) {
 				playerX = player.getPosX();
 				playerY = player.getPosY();
