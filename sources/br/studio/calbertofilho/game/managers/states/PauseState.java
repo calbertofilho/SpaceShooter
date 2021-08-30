@@ -25,7 +25,7 @@ public class PauseState extends States {
 	@Override
 	public void init() {
 		try {
-			textFont = Font.createFont(Font.TRUETYPE_FONT, new File("resources\\assets\\fonts\\Audiowide-Regular.ttf"));
+			textFont = Font.createFont(Font.TRUETYPE_FONT, new File("resources/assets/fonts/Audiowide-Regular.ttf"));
 		} catch (FontFormatException | IOException e) {
 			e.printStackTrace();
 		}

@@ -64,9 +64,9 @@ public class PlayState extends States {
 	@Override
 	public void init() {
 		try {
-			textFont = Font.createFont(Font.TRUETYPE_FONT, new File("resources\\assets\\fonts\\Audiowide-Regular.ttf"));
-			scoreFont = Font.createFont(Font.TRUETYPE_FONT, new File("resources\\assets\\fonts\\04B_19__.TTF"));
-			bgmSound = new MidiPlayer("resources\\assets\\sounds\\bgm.mid");
+			textFont = Font.createFont(Font.TRUETYPE_FONT, new File("resources/assets/fonts/Audiowide-Regular.ttf"));
+			scoreFont = Font.createFont(Font.TRUETYPE_FONT, new File("resources/assets/fonts/04B_19__.TTF"));
+			bgmSound = new MidiPlayer("resources/assets/sounds/bgm.mid");
 			bgmSound.setVolume(0.7);
 			bgmSound.playMusicContinuously();
 		} catch (FontFormatException | IOException e) {
@@ -351,7 +351,7 @@ public class PlayState extends States {
 		alphaFontColor = (alphaFontColor > 255) ? 255 : alphaFontColor;
 		alphaFontColor = (alphaFontColor < 0) ? 0 : alphaFontColor;
 		graphics.setColor(new Color(255, 255, 255, alphaFontColor));
-		text = (waveNumber <= 10) ? "---     W A V E   " + waveNumber + "     ---" : "---     P A R A B É N S   ! ! !     ---";
+		text = (waveNumber <= 10) ? "---     W A V E   " + waveNumber + "     ---" : "---     P A R A B ï¿½ N S   ! ! !     ---";
 		textLength = (int) graphics.getFontMetrics().getStringBounds(text, graphics).getWidth();
 		graphics.drawString(text, DrawableFramePanel.getGameWidth() / 2 - textLength / 2, DrawableFramePanel.getGameHeight() / 2);
 	// show player lives         //
